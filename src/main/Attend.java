@@ -1,3 +1,5 @@
+package main;
+
 import com.google.gson.annotations.Expose;
 
 public class Attend {

@@ -1,4 +1,4 @@
-import sun.tools.asm.CatchData;
+package main;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -21,7 +21,7 @@ public class FacultyInfo extends HttpServlet{
         // get parameter
         String name = request.getParameter("facultyName");
         String dept = request.getParameter("dept");
-
+        String title = request.getParameter("title");
         // first check if dept exists if not adds to the database
         dbConn.openConnection();
         String query = "SELECT * FROM department";
@@ -49,10 +49,11 @@ public class FacultyInfo extends HttpServlet{
         }
 
         // insert faculty to faculty table
-        String insertFaculty = "INSERT INTO faculty VALUES (?)";
+        String insertFaculty = "INSERT INTO faculty VALUES (?,?)";
         stmt = dbConn.getPreparedStatment(insertFaculty);
         try {
             stmt.setString(1,name);
+            stmt.setString(2, title);
         }catch (SQLException ex){
             System.out.println(ex.getMessage());
         }
@@ -71,5 +72,8 @@ public class FacultyInfo extends HttpServlet{
 
         dbConn.closeConnections();
 
+        // go back to original form to add another faculty
+        RequestDispatcher rd = request.getRequestDispatcher("/faculty.jsp");
+        rd.forward(request, response);
     }
 }
