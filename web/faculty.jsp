@@ -26,6 +26,10 @@
             <label>Department</label>
             <input class="form-control" name="dept">
         </div>
+        <div class="form-group">
+            <label>Title</label>
+            <input class="form-control" name="title">
+        </div>
     </div>
     <button class="btn btn-primary" id="submit_btn">Submit</button>
 </form>

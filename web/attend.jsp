@@ -4,6 +4,8 @@
   Date: 2/8/19
   Time: 3:15 PM
   To change this template use File | Settings | File Templates.
+
+  Use this form to assign student to periods
 --%>
 <head>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">

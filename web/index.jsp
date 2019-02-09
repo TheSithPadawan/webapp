@@ -10,6 +10,6 @@
   <a href="student.jsp">Students</a>
   <a href="class_entry.jsp">Classes Entry Form</a>
   <a href="course_entry.jsp">Courses Entry Form</a>
-  <a href="faculty_entry.jsp">Faculty Entry Form</a>
+  <a href="faculty.jsp">Faculty Entry Form</a>
   <a href="course_enrollment.jsp">Course Enrollment Form</a>
 </ul>
