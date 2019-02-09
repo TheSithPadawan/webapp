@@ -29,7 +29,7 @@ public class AttendServlet extends HttpServlet{
         String jsonStr = sb.toString();
         final GsonBuilder builder = new GsonBuilder();
         Attend[] arr = builder.create().fromJson(jsonStr, Attend[].class);
-        
+
         // insert into database
         String insert = "INSERT INTO attends VALUES (?,?,?)";
         dbConn.openConnection();
