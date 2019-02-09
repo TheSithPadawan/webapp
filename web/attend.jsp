@@ -32,7 +32,7 @@
             <tbody>
             <tr>
                 <td class="col-sm-4">
-                    <input type="text" name="studentid" value="<%=studentID%>" class="form-control" />
+                    <input type="text" name="studentid" class="form-control" />
                 </td>
                 <td class="col-sm-4">
                     <input type="mail" name="quarter"  class="form-control"/>
@@ -107,7 +107,6 @@
         submit();
     });
     function submit (){
-        console.log("here");
         let inputList = document.getElementsByTagName('input');
         let arr = [];
         let currentObj = {};
@@ -116,7 +115,7 @@
             let element = inputList.item(i);
             let elementName = element.name;
 
-            if (elementName.startsWith('studentId')) {
+            if (elementName.startsWith('studentid')) {
                 currentObj['studentid'] = element.value;
             } else if (elementName.startsWith('quarter')) {
                 currentObj['quarter'] = element.value;
