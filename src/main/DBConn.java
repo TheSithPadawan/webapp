@@ -1,6 +1,7 @@
 package main;
 
 import java.sql.*;
+import java.util.HashMap;
 
 /*
     Use your own connection string

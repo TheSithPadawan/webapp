@@ -12,4 +12,5 @@
   <a href="course_entry.jsp">Courses Entry Form</a>
   <a href="faculty.jsp">Faculty Entry Form</a>
   <a href="course_enrollment.jsp">Course Enrollment Form</a>
+  <a href="thesis_committee.jsp">Thesis Committee Form</a>
 </ul>
