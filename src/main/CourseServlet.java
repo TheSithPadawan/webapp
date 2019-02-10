@@ -9,6 +9,12 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+/*
+todo:
+1. add department field to specify course offered by a department
+2. add category field to link course to category (operates the category_has_courses table)
+ */
+
 @WebServlet("/course")
 public class CourseServlet extends HttpServlet {
     private static DBConn dbConn = new DBConn();

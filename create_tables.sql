@@ -60,9 +60,10 @@ CREATE TABLE IF NOT EXISTS class (
 );
 
 CREATE TABLE IF NOT EXISTS course_grading_option (
-    courseID TEXT NOT NULL REFERENCES course(courseID) PRIMARY KEY,
+    courseID TEXT NOT NULL REFERENCES course(courseID),
     option TEXT NOT NULL,
-    CHECK (option IN ('Letter', 'S/U', 'Both'))
+    CHECK (option IN ('Letter', 'S/U', 'Both')),
+    PRIMARY KEY (courseID, option)
 );
 
 CREATE TABLE IF NOT EXISTS sections (
@@ -91,7 +92,8 @@ CREATE TABLE IF NOT EXISTS weekly_meetings (
 );
 
 CREATE TABLE IF NOT EXISTS faculty (
-    name TEXT NOT NULL PRIMARY KEY
+    name TEXT NOT NULL PRIMARY KEY,
+    title TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS textbooks (
@@ -107,18 +109,6 @@ CREATE TABLE IF NOT EXISTS degree (
     PRIMARY KEY (dept_name, deg_type)
 );
 
-CREATE TABLE IF NOT EXISTS ms_concentration (
-    concentration_type TEXT NOT NULL PRIMARY KEY,
-    units INT NOT NULL,
-    min_gpa DECIMAL NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS degree_categories (
-    category_type TEXT NOT NULL PRIMARY KEY,
-    units INT NOT NULL,
-    min_gpa DECIMAL NOT NULL
-);
-
 -- relationship sets
 CREATE TABLE IF NOT EXISTS ms_thesis_committee (
     studentID TEXT NOT NULL REFERENCES student(studentID) PRIMARY KEY,
@@ -129,6 +119,7 @@ CREATE TABLE IF NOT EXISTS ms_thesis_committee (
 CREATE TABLE IF NOT EXISTS phd_thesis_committee_dept (
     studentID TEXT NOT NULL REFERENCES student(studentID),
     faculty_name TEXT NOT NULL REFERENCES faculty(name),
+    department TEXT NOT NULL REFERENCES department(name),
     PRIMARY KEY (studentID, faculty_name)
 );
 
@@ -270,27 +261,16 @@ CREATE TABLE IF NOT EXISTS prereqs (
 CREATE TABLE IF NOT EXISTS degree_has_categories (
     dept_name TEXT NOT NULL,
     deg_type TEXT NOT NULL,
-    category_type TEXT NOT NULL REFERENCES degree_categories(category_type),
+    category_type TEXT NOT NULL,
+    units int NOT NULL,
+    min_gpa float,
     FOREIGN KEY (dept_name, deg_type) REFERENCES degree(dept_name, deg_type),
     PRIMARY KEY (dept_name, deg_type, category_type)
 );
 
-CREATE TABLE IF NOT EXISTS degree_has_concentration (
-    dept_name TEXT NOT NULL,
-    deg_type TEXT NOT NULL,
-    category_type TEXT NOT NULL REFERENCES ms_concentration(concentration_type),
-    FOREIGN KEY (dept_name, deg_type) REFERENCES degree(dept_name, deg_type),
-    PRIMARY KEY (dept_name, deg_type, category_type)
-);
-
-CREATE TABLE IF NOT EXISTS concentration_has_courses (
-    concentration_type TEXT NOT NULL REFERENCES ms_concentration(concentration_type),
-    courseID TEXT NOT NULL REFERENCES course(courseID),
-    PRIMARY KEY (concentration_type, courseID)
-);
 
 CREATE TABLE IF NOT EXISTS category_has_courses (
-    category_type TEXT NOT NULL REFERENCES ms_concentration(concentration_type),
+    category_type TEXT NOT NULL,
     courseID TEXT NOT NULL REFERENCES course(courseID),
     PRIMARY KEY (category_type, courseID)
 );
