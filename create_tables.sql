@@ -1,3 +1,21 @@
+DO $$ BEGIN
+    CREATE TYPE quarter_enum AS ENUM ('SP', 'SU1', 'SU2', 'FA', 'WI');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+    CREATE TYPE meeting_enum AS ENUM ('LE', 'DI', 'LA');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+    CREATE TYPE day_enum AS ENUM ('M', 'Tu', 'W', 'Th', 'F', 'Sa', 'Su');
+EXCEPTION
+    WHEN duplicate_object THEN null;
+END $$;
+
 CREATE TABLE IF NOT EXISTS student (
     ssn INT NOT NULL PRIMARY KEY,
     residency TEXT NOT NULL,
@@ -45,16 +63,16 @@ CREATE TABLE IF NOT EXISTS course (
     CHECK (units_min <= units_max)
 );
 
-CREATE TABLE IF NOT EXISTS course_previous (
+CREATE TABLE IF NOT EXISTS previous_courseID (
     courseID TEXT NOT NULL REFERENCES course(courseID),
-    prev_name TEXT NOT NULL,
-    PRIMARY KEY (courseId, prev_name)
+    prev_id TEXT NOT NULL,
+    PRIMARY KEY (courseId, prev_id)
 );
 
 CREATE TABLE IF NOT EXISTS class (
     courseID TEXT NOT NULL REFERENCES course(courseID),
     title TEXT NOT NULL,
-    quarter TEXT NOT NULL,
+    quarter quarter_enum NOT NULL,
     year INT NOT NULL,
     PRIMARY KEY (courseID, quarter, year)
 );
@@ -81,12 +99,12 @@ CREATE TABLE IF NOT EXISTS review_sessions (
 );
 
 CREATE TABLE IF NOT EXISTS weekly_meetings (
-    day TEXT NOT NULL,
+    day day_enum NOT NULL,
     time_start TIME NOT NULL,
     time_end TIME NOT NULL,
     building TEXT NOT NULL,
     room TEXT NOT NULL,
-    type_meeting TEXT NOT NULL,
+    type_meeting meeting_enum NOT NULL,
     required_meeting BOOLEAN NOT NULL,
     PRIMARY KEY (day, time_start, time_end, building, room)
 );
@@ -96,10 +114,10 @@ CREATE TABLE IF NOT EXISTS faculty (
     title TEXT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS textbooks (
-    isbn INT NOT NULL PRIMARY KEY,
-    author TEXT NOT NULL,
-    is_required BOOLEAN NOT NULL
+CREATE TABLE IF NOT EXISTS textbook (
+    isbn BIGINT NOT NULL PRIMARY KEY,
+    title TEXT NOT NULL,
+    author TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS degree (
@@ -111,7 +129,7 @@ CREATE TABLE IF NOT EXISTS degree (
 
 -- relationship sets
 CREATE TABLE IF NOT EXISTS ms_thesis_committee (
-    studentID TEXT NOT NULL REFERENCES student(studentID) PRIMARY KEY,
+    studentID TEXT NOT NULL REFERENCES student(studentID),
     faculty_name TEXT NOT NULL REFERENCES faculty(name),
     PRIMARY KEY (studentID, faculty_name)
 );
@@ -133,14 +151,14 @@ CREATE TABLE IF NOT EXISTS student_previous_degree (
 
 CREATE TABLE IF NOT EXISTS attends (
     studentID TEXT NOT NULL REFERENCES student(studentID),
-    quarter TEXT NOT NULL,
+    quarter quarter_enum NOT NULL,
     year INT NOT NULL,
     PRIMARY KEY (studentID, quarter, year)
 );
 
-CREATE TABLE IF NOT EXISTS probates (
+CREATE TABLE IF NOT EXISTS probation (
     studentID TEXT NOT NULL REFERENCES student(studentID),
-    quarter TEXT NOT NULL,
+    quarter quarter_enum NOT NULL,
     year INT NOT NULL,
     reason TEXT NOT NULL,
     PRIMARY KEY (studentID, quarter, year)
@@ -149,16 +167,18 @@ CREATE TABLE IF NOT EXISTS probates (
 CREATE TABLE IF NOT EXISTS has_taken (
     studentID TEXT NOT NULL REFERENCES student(studentID),
     courseID TEXT NOT NULL REFERENCES course(courseID),
-    quarter TEXT NOT NULL,
+    sectionID TEXT NOT NULL REFERENCES sections(sectionID),
+    quarter quarter_enum NOT NULL,
     year INT NOT NULL,
     grade TEXT NOT NULL,
-    PRIMARY KEY (studentID, courseID)
+    units INT NOT NULL,
+    PRIMARY KEY (studentID, courseID, sectionID)
 );
 
 CREATE TABLE IF NOT EXISTS is_taking (
     studentID TEXT NOT NULL REFERENCES student(studentID),
     courseID TEXT NOT NULL REFERENCES course(courseID),
-    quarter TEXT NOT NULL,
+    quarter quarter_enum NOT NULL,
     year INT NOT NULL,
     PRIMARY KEY (studentID, courseID)
 );
@@ -171,7 +191,7 @@ CREATE TABLE IF NOT EXISTS course_offered (
 CREATE TABLE IF NOT EXISTS has_sections (
     courseID TEXT NOT NULL REFERENCES course(courseID),
     sectionID TEXT NOT NULL REFERENCES sections(sectionID),
-    quarter TEXT NOT NULL,
+    quarter quarter_enum NOT NULL,
     year INT NOT NULL,
     PRIMARY KEY (courseId, sectionID, quarter, year)
 );
@@ -180,7 +200,7 @@ CREATE TABLE IF NOT EXISTS students_enrolled (
     studentID TEXT NOT NULL REFERENCES student(studentID),
     sectionID TEXT NOT NULL REFERENCES sections(sectionID),
     grading_option TEXT NOT NULL,
-    units INT NOT NULL, -- TODO:
+    units INT NOT NULL,
     PRIMARY KEY (sectionID, studentID),
     CHECK (grading_option IN ('Letter', 'S/U'))
 );
@@ -207,13 +227,15 @@ CREATE TABLE IF NOT EXISTS has_review_section (
 );
 
 CREATE TABLE IF NOT EXISTS has_textbook (
-    sectionID TEXT NOT NULL PRIMARY KEY REFERENCES sections(sectionID),
-    isbn INT NOT NULL REFERENCES textbooks(isbn)
+    sectionID TEXT NOT NULL REFERENCES sections(sectionID),
+    isbn BIGINT NOT NULL REFERENCES textbook(isbn),
+    is_required BOOLEAN NOT NULL,
+    PRIMARY KEY (sectionID, isbn)
 );
 
 CREATE TABLE IF NOT EXISTS has_weekly_meetings (
     sectionID TEXT NOT NULL REFERENCES sections(sectionID),
-    day TEXT NOT NULL,
+    day day_enum NOT NULL,
     time_start TIME NOT NULL,
     time_end TIME NOT NULL,
     building TEXT NOT NULL,
@@ -228,26 +250,10 @@ CREATE TABLE IF NOT EXISTS faculty_dept (
     PRIMARY KEY (faculty_name, dept_name)
 );
 
-CREATE TABLE IF NOT EXISTS faculty_teaching (
-    faculty_name TEXT NOT NULL REFERENCES faculty(name),
-    courseID TEXT NOT NULL REFERENCES course(courseID),
-    quarter TEXT NOT NULL,
-    year INT NOT NULL,
-    PRIMARY KEY (faculty_name, courseId, quarter, year)
-);
-
 CREATE TABLE IF NOT EXISTS faculty_taught (
     faculty_name TEXT NOT NULL REFERENCES faculty(name),
     courseID TEXT NOT NULL REFERENCES course(courseID),
-    quarter TEXT NOT NULL,
-    year INT NOT NULL,
-    PRIMARY KEY (faculty_name, courseId, quarter, year)
-);
-
-CREATE TABLE IF NOT EXISTS faculty_will_teach (
-    faculty_name TEXT NOT NULL REFERENCES faculty(name),
-    courseID TEXT NOT NULL REFERENCES course(courseID),
-    quarter TEXT NOT NULL,
+    quarter quarter_enum NOT NULL,
     year INT NOT NULL,
     PRIMARY KEY (faculty_name, courseId, quarter, year)
 );
@@ -267,7 +273,6 @@ CREATE TABLE IF NOT EXISTS degree_has_categories (
     FOREIGN KEY (dept_name, deg_type) REFERENCES degree(dept_name, deg_type),
     PRIMARY KEY (dept_name, deg_type, category_type)
 );
-
 
 CREATE TABLE IF NOT EXISTS category_has_courses (
     category_type TEXT NOT NULL,
