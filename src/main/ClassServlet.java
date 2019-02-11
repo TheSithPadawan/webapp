@@ -1,15 +1,16 @@
 package main;
 
-        import javax.servlet.ServletException;
-        import javax.servlet.annotation.WebServlet;
-        import javax.servlet.http.HttpServlet;
-        import javax.servlet.http.HttpServletRequest;
-        import javax.servlet.http.HttpServletResponse;
-        import java.io.IOException;
-        import java.sql.PreparedStatement;
-        import java.sql.SQLException;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
-@WebServlet("/class_entry")
+@WebServlet("/class")
 public class ClassServlet extends HttpServlet {
     private static DBConn dbConn = new DBConn();
 
@@ -21,7 +22,7 @@ public class ClassServlet extends HttpServlet {
         Integer year = Integer.parseInt(request.getParameter("year"));
 
         dbConn.openConnection();
-        PreparedStatement stmt = dbConn.getPreparedStatment("INSERT INTO class VALUES(?,?,?,?)");
+        PreparedStatement stmt = dbConn.getPreparedStatment("INSERT INTO class VALUES(?, ? ,?::quarter_enum, ?)");
         try {
             stmt.setString(1, courseID);
             stmt.setString(2, title);
@@ -33,10 +34,14 @@ public class ClassServlet extends HttpServlet {
 
         boolean result = dbConn.executePreparedStatement(stmt);
         if (!result) {
-            // TODO:
             System.out.println("statement failed!");
+            dbConn.closeConnections();
+            return;
         }
 
         dbConn.closeConnections();
+
+        RequestDispatcher rd = request.getRequestDispatcher("/section_entry.jsp");
+        rd.forward(request, response);
     }
 }

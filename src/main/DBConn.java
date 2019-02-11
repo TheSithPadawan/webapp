@@ -74,7 +74,7 @@ public class DBConn{
         try{
             pstmt.executeUpdate();
             this.conn.commit();
-            this.conn.setAutoCommit(true);
+            this.conn.setAutoCommit(false);
             success = true;
             return success;
         }
