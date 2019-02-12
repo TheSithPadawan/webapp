@@ -15,6 +15,7 @@
             crossorigin="anonymous"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 </head>
+<jsp:include page="index.jsp"/>
 
 <form>
     <div class="container">

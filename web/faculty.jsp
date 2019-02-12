@@ -15,6 +15,7 @@
             crossorigin="anonymous"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 </head>
+<jsp:include page="index.jsp"/>
 
 <form action = "/faculty_info" method = "post">
     <div class="container">

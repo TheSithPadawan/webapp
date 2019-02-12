@@ -18,6 +18,7 @@
 
 
 <!------ Include the above in your HEAD tag ---------->
+<jsp:include page="index.jsp"/>
 
 <form>
     <div class="container">
