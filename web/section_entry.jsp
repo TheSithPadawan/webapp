@@ -63,11 +63,11 @@
 
             <button type="button" class="btn btn-primary" id="btn_submit" onclick="submit()" disabled>Submit</button>
 
-            <%-- <br><hr>
+            <br><hr>
 
             <div class="embed-responsive embed-responsive-16by9">
               <iframe id="iframe_faculty" src="faculty.jsp" class="embed-responsive-item"></iframe>
-            </div> --%>
+            </div>
         </div>
 
         <script>
@@ -76,6 +76,15 @@
             const inputEnroll = document.getElementById('input_enroll');
             const selectFaculty = document.getElementById('select_faculty');
             const btnSubmit = document.getElementById('btn_submit');
+            const iframeFaculty = document.getElementById('iframe_faculty');
+
+            $(document).ready(() => {
+                $(iframeFaculty).on('load', () => {
+                    iframeFaculty.onload = (() => {
+                        location.reload();
+                    });
+                });
+            });
 
             function validate() {
                 let section = inputSection.value;
