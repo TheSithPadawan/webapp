@@ -89,15 +89,6 @@ CREATE TABLE IF NOT EXISTS sections (
     enrollment_limit INT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS review_sessions (
-    date_of DATE NOT NULL,
-    time_start TIME NOT NULL,
-    time_end TIME NOT NULL,
-    building TEXT NOT NULL,
-    room TEXT NOT NULL,
-    PRIMARY KEY (date_of, time_start, time_end, building, room)
-);
-
 CREATE TABLE IF NOT EXISTS weekly_meetings (
     day day_enum NOT NULL,
     time_start TIME NOT NULL,
@@ -271,11 +262,13 @@ CREATE TABLE IF NOT EXISTS degree_has_categories (
     units int NOT NULL,
     min_gpa float,
     FOREIGN KEY (dept_name, deg_type) REFERENCES degree(dept_name, deg_type),
-    PRIMARY KEY (dept_name, deg_type, category_type)
+    PRIMARY KEY (dept_name, category_type)
 );
 
 CREATE TABLE IF NOT EXISTS category_has_courses (
+    department TEXT NOT NULL REFERENCES department(name),
     category_type TEXT NOT NULL,
     courseID TEXT NOT NULL REFERENCES course(courseID),
-    PRIMARY KEY (category_type, courseID)
+    PRIMARY KEY (category_type, courseID),
+    FOREIGN KEY (department, category_type) REFERENCES degree_has_categories(dept_name, category_type)
 );
