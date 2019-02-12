@@ -31,7 +31,7 @@ public class AttendServlet extends HttpServlet{
         Attend[] arr = builder.create().fromJson(jsonStr, Attend[].class);
 
         // insert into database
-        String insert = "INSERT INTO attends VALUES (?,?,?)";
+        String insert = "INSERT INTO attends VALUES (?,?::quarter_enum,?)";
         dbConn.openConnection();
         PreparedStatement stmt = dbConn.getPreparedStatment(insert);
         for (int i = 0; i < arr.length; i++){
@@ -49,5 +49,7 @@ public class AttendServlet extends HttpServlet{
             System.out.println(result);
         }
         dbConn.closeConnections();
+
+        // redirection
     }
 }

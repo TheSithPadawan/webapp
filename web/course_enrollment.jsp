@@ -1,7 +1,9 @@
 <%@ page import="main.DBConn" %>
 <%@ page import="java.sql.ResultSet" %>
 <%@ page import="java.util.List" %>
-<%@ page import="java.util.ArrayList" %><%--
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.sql.PreparedStatement" %>
+<%@ page import="java.sql.SQLException" %><%--
   Created by IntelliJ IDEA.
   User: miaor
   Date: 2/9/19
@@ -21,32 +23,40 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 </head>
 
+<body>
+<jsp:include page="index.jsp"/>
+
+<%
+    DBConn dbConn = new DBConn();
+    dbConn.openConnection();
+    String query = "SELECT * FROM course";
+    dbConn.executeQuery(query);
+    ResultSet rs = dbConn.getResultSet();
+%>
+
 <form action="/enroll" method="post">
     <div class="container">
         <div class="form-group">
             <label>StudentID</label>
-            <input class="form-control" name="studentid">
+            <input class="form-control" name="studentid" id="studentid">
         </div>
         <div class="form-group">
             <label>CourseID</label>
-            <input class="form-control" name="courseid">
+            <select name="courseid" id="courseid">
+                <% while (rs.next()) { %>
+                <option value="<%=rs.getString("courseID")%>"><%=rs.getString("courseID")%></option>
+                <% } %>
+            </select>
         </div>
+
         <div class="form-group">
             <label>Grading Option</label>
             <select class="form-control" name="gradingOption">
-                <option value="letter">Letter</option>
-                <option value="su">S/U</option>
-                <option value="both">Both</option>
+                <option value="Letter">Letter</option>
+                <option value="S/U">S/U</option>
             </select>
-        </div>
-        <div class="form-group">
-            <label>SectionID</label>
-            <input class="form-control" name="sectionid">
-        </div>
-        <div class="form-group">
-            <label>Units</label>
-            <input class="form-control" name="units">
         </div>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
+</body>

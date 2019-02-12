@@ -43,11 +43,11 @@ public class PastClassServlet extends HttpServlet {
 
             String validOption = rset.getString("option").toLowerCase();
             if (!validOption.equals("both")) {
-                if (!grade.toLowerCase().equals(validOption)) {
-                    System.out.println("invalid grade option");
-                    dbConn.closeConnections();
-                    return;
-                }
+//                if (!grade.toLowerCase().equals(validOption)) {
+//                    System.out.println("invalid grade option");
+//                    dbConn.closeConnections();
+//                    return;
+//                }
             }
 
             // validate units
