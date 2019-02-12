@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS ms (
 CREATE TABLE IF NOT EXISTS phd (
     studentID TEXT REFERENCES student(studentID) NOT NULL PRIMARY KEY,
     department TEXT REFERENCES department(name) NOT NULL,
-    advisor TEXT NOT NULL,
+    advisor TEXT NOT NULL REFERENCES faculty(name),
     type TEXT NOT NULL
 );
 
