@@ -16,6 +16,7 @@ import com.google.gson.GsonBuilder;
 @WebServlet("/degree_category")
 public class DegreeCategoryServlet extends HttpServlet{
     private static DBConn dbConn = new DBConn();
+    private static Util util = new Util();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)throws ServletException,
@@ -35,6 +36,7 @@ public class DegreeCategoryServlet extends HttpServlet{
         DegreeCategory dct = builder.create().fromJson(jsonStr, DegreeCategory.class);
 
         // insert into degree database
+        util.insertDepartment(dbConn, dct.department);
         dbConn.openConnection();
         String insert = "";
         PreparedStatement stmt;
