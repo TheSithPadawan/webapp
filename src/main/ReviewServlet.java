@@ -24,7 +24,7 @@ public class ReviewServlet extends HttpServlet {
         String sectionID = request.getParameter("sectionID");
 
         dbConn.openConnection();
-        PreparedStatement stmtHas = dbConn.getPreparedStatment("INSERT INTO has_review_section VALUES(?, ?::DATE, ?::TIME, ?::TIME, ?, ?)");
+        PreparedStatement stmtHas = dbConn.getPreparedStatment("INSERT INTO review_session VALUES(?, ?::DATE, ?::TIME, ?::TIME, ?, ?)");
         try {
             stmtHas.setString(1, sectionID);
             stmtHas.setString(2, date);

@@ -15,10 +15,22 @@
     <body>
         <jsp:include page="index.jsp"/>
 
+        <%
+            DBConn dbConn = new DBConn();
+            dbConn.openConnection();
+            String query = "SELECT * FROM sections";
+            dbConn.executeQuery(query);
+            ResultSet rs = dbConn.getResultSet();
+        %>
+
         <br>
         <div class="container">
             <label>Section ID: </label>
-            <input class="form-control" type="text" id="input_sectionID">
+            <select id="input_sectionID" class="form-control">
+                <% while (rs.next()) { %>
+                    <option value="<%=rs.getString("sectionID")%>"><%=rs.getString("sectionID")%></option>
+                <% } %>
+            </select>
 
             <table class="table order-list">
                 <thead>

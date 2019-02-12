@@ -207,7 +207,7 @@ CREATE TABLE IF NOT EXISTS taught_by (
     faculty_name TEXT NOT NULL REFERENCES faculty(name)
 );
 
-CREATE TABLE IF NOT EXISTS has_review_section (
+CREATE TABLE IF NOT EXISTS review_session (
     sectionID TEXT NOT NULL REFERENCES sections(sectionID),
     date_of DATE NOT NULL,
     time_start TIME NOT NULL,
