@@ -13,12 +13,16 @@ import java.sql.SQLException;
 @WebServlet("/ms_info")
 public class MsServlet extends HttpServlet {
     private static DBConn dbConn = new DBConn();
+    private static Util util = new Util();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
         String dept = request.getParameter("dept");
         String studentid = request.getParameter("button");
+        // insert department first
+        util.insertDepartment(dbConn, dept);
+
         // Prepare statement and post to DB
         dbConn.openConnection();
         String insert = "INSERT INTO ms VALUES(?,?)";

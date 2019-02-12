@@ -13,6 +13,7 @@ import java.sql.SQLException;
 @WebServlet("/phd_info")
 public class PhDServlet extends HttpServlet {
     private static DBConn dbConn = new DBConn();
+    private static Util util = new Util();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
@@ -21,6 +22,9 @@ public class PhDServlet extends HttpServlet {
         String studentid = request.getParameter("button");
         String advisor = request.getParameter("advisor");
         String type = request.getParameter("type");
+
+        // check for department first
+        util.insertDepartment(dbConn, dept);
 
         // Prepare statement and post to DB
         dbConn.openConnection();

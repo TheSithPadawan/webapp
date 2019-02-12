@@ -11,10 +11,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
-
 @WebServlet("/faculty_info")
 public class FacultyInfo extends HttpServlet{
     private static DBConn dbConn = new DBConn();
+    private static Util util = new Util();
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
@@ -23,34 +23,11 @@ public class FacultyInfo extends HttpServlet{
         String dept = request.getParameter("dept");
         String title = request.getParameter("title");
         // first check if dept exists if not adds to the database
-        dbConn.openConnection();
-        String query = "SELECT * FROM department";
-        dbConn.getPreparedStatment(query);
-        dbConn.executeQuery(query);
-        ResultSet rs = dbConn.getResultSet();
-        HashSet<String> depts = new HashSet<>();
-        PreparedStatement stmt;
-        try {
-            while(rs.next()){
-                depts.add(rs.getString("name"));
-            }
-        }catch (SQLException ex){
-            System.out.println(ex.getMessage());
-        }
-        if (!depts.contains(dept)){
-            String insertDept = "INSERT INTO department VALUES (?)";
-            stmt = dbConn.getPreparedStatment(insertDept);
-            try {
-                stmt.setString(1, dept);
-            }catch (SQLException ex){
-                System.out.println(ex.getMessage());
-            }
-            dbConn.executePreparedStatement(stmt);
-        }
+        util.insertDepartment(dbConn, dept);
 
         // insert faculty to faculty table
         String insertFaculty = "INSERT INTO faculty VALUES (?,?)";
-        stmt = dbConn.getPreparedStatment(insertFaculty);
+        PreparedStatement stmt = dbConn.getPreparedStatment(insertFaculty);
         try {
             stmt.setString(1,name);
             stmt.setString(2, title);
