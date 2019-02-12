@@ -21,6 +21,7 @@
         <li><a href="student.jsp">Students</a></li>
         <li><a href="course_entry.jsp">Courses Entry Form</a></li>
         <li><a href="class_entry.jsp">Classes Entry Form</a></li>
+        <li><a href="section_entry.jsp">Section Entry Form</a></li>
         <li><a href="past_classes.jsp">Past Classes Entry Form</a></li>
         <li><a href="review_session.jsp">Review Session Entry Form</a></li>
         <li><a href="previous_courseid.jsp">Previous Course ID Entry Form</a></li>
