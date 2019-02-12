@@ -7,11 +7,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /*
 todo:
-1. add department field to specify course offered by a department
 2. add category field to link course to category (operates the category_has_courses table)
  */
 
@@ -29,8 +29,33 @@ public class CourseServlet extends HttpServlet {
         String department = request.getParameter("department");
         String category = request.getParameter("category");
         String gradingOption = request.getParameter("grading_option");
+        String preqreqsStr = request.getParameter("prereqs");
+        String[] preqreqArr = null;
+        if (preqreqsStr != null) {
+            preqreqArr = preqreqsStr.split("\\|");
+        }
 
         dbConn.openConnection();
+
+        try {
+            dbConn.executeQuery("SELECT * FROM department WHERE name='" + department + "'");
+            ResultSet rs = dbConn.getResultSet();
+            if (!rs.next()) {
+                System.out.println("department was not found, inserting");
+                PreparedStatement stmtNewDept = dbConn.getPreparedStatment("INSERT INTO department VALUES(?)");
+                stmtNewDept.setString(1, department);
+                boolean newDeptResult = dbConn.executePreparedStatement(stmtNewDept);
+                if (!newDeptResult) {
+                    System.out.println("failed to insert new dept");
+                    dbConn.closeConnections();
+                    return;
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return;
+        }
+
         PreparedStatement stmtCourse = dbConn.getPreparedStatment("INSERT INTO course VALUES(?,?,?,?,?)");
         PreparedStatement stmtDept = dbConn.getPreparedStatment("INSERT INTO course_offered VALUES(?,?)");
         PreparedStatement stmtCat = dbConn.getPreparedStatment("INSERT INTO category_has_courses VALUES(?,?)");
@@ -104,6 +129,25 @@ public class CourseServlet extends HttpServlet {
             System.out.println("grade statement failed!");
             dbConn.closeConnections();
             return;
+        }
+
+        if (preqreqArr != null && preqreqArr.length > 0) {
+            for (int index = 0; index < preqreqArr.length; index++) {
+                String prereq = preqreqArr[index];
+                System.out.println(prereq);
+                try {
+                    PreparedStatement stmtPrereq = dbConn.getPreparedStatment("INSERT INTO prereqs VALUES(?,?)");
+                    stmtPrereq.setString(1, courseID);
+                    stmtPrereq.setString(2, prereq);
+                    boolean prereqResult = dbConn.executePreparedStatement(stmtPrereq);
+                    if (!prereqResult) {
+                        System.out.println("prereq failed at index " + index);
+                    }
+                } catch (SQLException ex) {
+                    System.out.println("prereq exception at index " + index);
+                    ex.printStackTrace();
+                }
+            }
         }
 
         dbConn.closeConnections();

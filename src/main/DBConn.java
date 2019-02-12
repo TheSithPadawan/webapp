@@ -69,6 +69,21 @@ public class DBConn{
         return null;
     }
 
+    public PreparedStatement getScrollableReadOnlyPreparedStatment(String statement) {
+        try {
+            this.conn.setAutoCommit(false);
+            PreparedStatement pstmt = this.conn.prepareStatement(statement,
+                ResultSet.TYPE_SCROLL_INSENSITIVE,
+                ResultSet.CONCUR_READ_ONLY);
+            return pstmt;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            if(DEBUG) System.out.println("Failed to create PreparedStatement.");
+        }
+        return null;
+    }
+
     public boolean executePreparedStatement(PreparedStatement pstmt){
         boolean success = false;
         try{

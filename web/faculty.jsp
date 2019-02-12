@@ -31,7 +31,7 @@
             <label>Title</label>
             <input class="form-control" name="title">
         </div>
+        <button class="btn btn-primary" id="submit_btn">Submit</button>
     </div>
-    <button class="btn btn-primary" id="submit_btn">Submit</button>
 </form>
 

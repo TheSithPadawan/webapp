@@ -249,6 +249,14 @@ CREATE TABLE IF NOT EXISTS faculty_taught (
     PRIMARY KEY (faculty_name, courseId, quarter, year)
 );
 
+CREATE TABLE IF NOT EXISTS faculty_will_teach (
+    faculty_name TEXT NOT NULL REFERENCES faculty(name),
+    courseID TEXT NOT NULL REFERENCES course(courseID),
+    quarter quarter_enum NOT NULL,
+    year INT NOT NULL,
+    PRIMARY KEY (faculty_name, courseId, quarter, year)
+);
+
 CREATE TABLE IF NOT EXISTS prereqs (
     current_courseID TEXT NOT NULL REFERENCES course(courseID),
     prev_courseID TEXT NOT NULL REFERENCES course(courseID),
@@ -256,7 +264,7 @@ CREATE TABLE IF NOT EXISTS prereqs (
 );
 
 CREATE TABLE IF NOT EXISTS degree_has_categories (
-    dept_name TEXT NOT NULL,
+    dept_name TEXT NOT NULL REFERENCES department(name),
     deg_type TEXT NOT NULL,
     category_type TEXT NOT NULL,
     units int NOT NULL,

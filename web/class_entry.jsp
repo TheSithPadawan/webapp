@@ -30,7 +30,7 @@
             <div class="container">
                 <div class="form-group">
                     <label>Course ID</label>
-                    <select name="courseID">
+                    <select name="courseID" class="form-control">
                         <% while (rs.next()) { %>
                             <option value="<%=rs.getString("courseID")%>"><%=rs.getString("courseID")%></option>
                         <% } %>

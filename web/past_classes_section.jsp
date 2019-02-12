@@ -50,7 +50,7 @@
             <b>Choose course, class, quarter, and year</b>
             <div class="form-group">
                 <label>Section ID</label>
-                <select id="select_sectionID">
+                <select id="select_sectionID" class="form-control">
                     <% while (rs.next()) { %>
                         <option value="<%=rs.getString("sectionID")%>"><%=rs.getString("sectionID")%></option>
                     <% } %>
@@ -64,7 +64,7 @@
 
             <div class="form-group">
                 <label>Grading Option</label>
-                <select id="select_option">
+                <select id="select_option" class="form-control">
                     <option value="Letter">Letter</option>
                     <option value="S/U">S/U</option>
                 </select>

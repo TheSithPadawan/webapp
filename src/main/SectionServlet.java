@@ -30,7 +30,12 @@ public class SectionServlet extends HttpServlet {
         PreparedStatement stmtHasSections = dbConn.getPreparedStatment("INSERT INTO has_sections VALUES(?, ?, ?::quarter_enum, ?)");
         // PreparedStatement stmtHasDel = dbConn.getPreparedStatment("DELETE FROM has_sections WHERE couresID=? AND sectionID=?");
         PreparedStatement stmtTaught = dbConn.getPreparedStatment("INSERT INTO taught_by VALUES(?, ?)");
-        PreparedStatement stmtTaught2 = dbConn.getPreparedStatment("INSERT INTO faculty_taught VALUES(?, ?, ?::quarter_enum, ?)");
+
+        PreparedStatement stmtTaught2 = dbConn.getPreparedStatment("INSERT INTO faculty_taught VALUES(?, ?, ?::quarter_enum, ?)");;
+        if ((year > 2019) || (year == 2019 && !quarter.equals("WI"))) {
+            stmtTaught2 = dbConn.getPreparedStatment("INSERT INTO faculty_will_teach VALUES(?, ?, ?::quarter_enum, ?)");
+        }
+
         try {
             stmtSection.setString(1, sectionID);
             stmtSection.setInt(2, enrollment_limit);

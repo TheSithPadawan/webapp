@@ -14,6 +14,7 @@
     </head>
 
     <body>
+        <jsp:include page="index.jsp"/>
 
         <%
             DBConn dbConn = new DBConn();
@@ -30,11 +31,14 @@
         %>
 
         <div class="container">
-            <select id="select_courseID">
-                <% while (rs.next()) { %>
-                    <option value="<%=rs.getString("courseID") + " | " + rs.getString("quarter") + " | " + rs.getString("year")%>"> <%=rs.getString("courseID") + " | " + rs.getString("quarter") + " | " + rs.getString("year")%> </option>
-                <% } %>
-            </select>
+            <div class="form-group">
+                <label>Class</label>
+                <select id="select_courseID" class="form-control">
+                    <% while (rs.next()) { %>
+                        <option value="<%=rs.getString("courseID") + " | " + rs.getString("quarter") + " | " + rs.getString("year")%>"> <%=rs.getString("courseID") + " | " + rs.getString("quarter") + " | " + rs.getString("year")%> </option>
+                    <% } %>
+                </select>
+            </div>
 
             <div class="form-group">
                 <label>Section ID</label>
@@ -46,13 +50,24 @@
                 <input type="number" class="form-control" name="enrollment_limit" id="input_enroll" oninput="validate()">
             </div>
 
-            <select id="select_faculty">
-                <% while (rsFaculty.next()) { %>
-                    <option value="<%=rsFaculty.getString("name")%>"> <%= rsFaculty.getString("name") %> </option>
-                <% } %>
-            </select><br>
+            <div class="form-group">
+                <label>Select faculty</label>
+                <%-- <br>
+                <a href="faculty.jsp">Add faculty</a> --%>
+                <select id="select_faculty" class="form-control">
+                    <% while (rsFaculty.next()) { %>
+                        <option value="<%=rsFaculty.getString("name")%>"> <%= rsFaculty.getString("name") %> </option>
+                    <% } %>
+                </select>
+            </div>
 
             <button type="button" class="btn btn-primary" id="btn_submit" onclick="submit()" disabled>Submit</button>
+
+            <%-- <br><hr>
+
+            <div class="embed-responsive embed-responsive-16by9">
+              <iframe id="iframe_faculty" src="faculty.jsp" class="embed-responsive-item"></iframe>
+            </div> --%>
         </div>
 
         <script>

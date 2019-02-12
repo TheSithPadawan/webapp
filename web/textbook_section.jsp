@@ -36,7 +36,7 @@
         <div class="container">
             <div class="form-group">
                 <label>Section ID</label>
-                <select name="sectionID" id="select_sectionID">
+                <select name="sectionID" id="select_sectionID" class="form-control">
                     <% while (rs.next()) { %>
                         <option value="<%=rs.getString("sectionID")%>"><%=rs.getString("sectionID")%></option>
                     <% }  %>
@@ -45,7 +45,7 @@
 
             <div class="form-group">
                 <label>ISBN</label>
-                <select name="isbn" id="select_isbn">
+                <select name="isbn" id="select_isbn" class="form-control">
                     <% while (rs2.next()) { %>
                         <option value="<%=rs2.getString("isbn")%>"><%=rs2.getString("isbn")%></option>
                     <% } %>

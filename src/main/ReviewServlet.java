@@ -24,15 +24,8 @@ public class ReviewServlet extends HttpServlet {
         String sectionID = request.getParameter("sectionID");
 
         dbConn.openConnection();
-        PreparedStatement stmtReview = dbConn.getPreparedStatment("INSERT INTO review_sessions VALUES(?::DATE, ?::TIME, ?::TIME, ?, ?)");
         PreparedStatement stmtHas = dbConn.getPreparedStatment("INSERT INTO has_review_section VALUES(?, ?::DATE, ?::TIME, ?::TIME, ?, ?)");
         try {
-            stmtReview.setString(1, date);
-            stmtReview.setString(2, timeStart);
-            stmtReview.setString(3, timeEnd);
-            stmtReview.setString(4, building);
-            stmtReview.setString(5, room);
-
             stmtHas.setString(1, sectionID);
             stmtHas.setString(2, date);
             stmtHas.setString(3, timeStart);
@@ -41,13 +34,6 @@ public class ReviewServlet extends HttpServlet {
             stmtHas.setString(6, room);
         } catch (SQLException ex) {
             ex.printStackTrace();
-        }
-
-        boolean resultReview = dbConn.executePreparedStatement(stmtReview);
-        if (!resultReview) {
-            System.out.println("weekly statement failed!");
-            dbConn.closeConnections();
-            return;
         }
 
         boolean resultHas = dbConn.executePreparedStatement(stmtHas);

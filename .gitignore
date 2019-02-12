@@ -34,3 +34,4 @@ insert_test.sql
 .vscode/
 TODO.txt
 target/
+web/WEB-INF/classes
