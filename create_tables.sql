@@ -27,6 +27,11 @@ CREATE TABLE IF NOT EXISTS student (
     CHECK (residency IN ('CA US', 'Non-CA US', 'Foreign'))
 );
 
+CREATE TABLE IF NOT EXISTS faculty (
+    name TEXT NOT NULL PRIMARY KEY,
+    title TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS department (
     name TEXT NOT NULL PRIMARY KEY
 );
@@ -98,11 +103,6 @@ CREATE TABLE IF NOT EXISTS weekly_meetings (
     type_meeting meeting_enum NOT NULL,
     required_meeting BOOLEAN NOT NULL,
     PRIMARY KEY (day, time_start, time_end, building, room)
-);
-
-CREATE TABLE IF NOT EXISTS faculty (
-    name TEXT NOT NULL PRIMARY KEY,
-    title TEXT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS textbook (
