@@ -32,6 +32,7 @@
         <li><a href="probation.jsp">Probation Entry Form</a></li>
         <li><a href="textbook.jsp">Textbook Entry Form</a></li>
         <li><a href="textbook_section.jsp">Textbook-Section Entry Form</a></li>
+        <li><a href="department.jsp">Department Entry Form</a></li>
     </ul>
 </div>
 <br>

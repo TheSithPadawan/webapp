@@ -65,9 +65,9 @@
 
             <br><hr>
 
-            <div class="embed-responsive embed-responsive-16by9">
-              <iframe id="iframe_faculty" src="faculty.jsp" class="embed-responsive-item"></iframe>
-            </div>
+            <%--<div class="embed-responsive embed-responsive-16by9">--%>
+              <%--<iframe id="iframe_faculty" src="faculty.jsp" class="embed-responsive-item"></iframe>--%>
+            <%--</div>--%>
         </div>
 
         <script>
