@@ -49,8 +49,8 @@ public class StudentServlet extends HttpServlet{
         boolean res = dbConn.executePreparedStatement(stmt);
         System.out.println(res);
         String insertDeg = "INSERT INTO student_previous_degree VALUES (?, ?, ?)";
-        PreparedStatement insertStmt = dbConn.getPreparedStatment(insertDeg);
         if (prevDept.length() > 0 && degType.length() > 0){
+            PreparedStatement insertStmt = dbConn.getPreparedStatment(insertDeg);
             try {
                 insertStmt.setString(1, id);
                 insertStmt.setString(2, prevDept);
@@ -58,9 +58,9 @@ public class StudentServlet extends HttpServlet{
             }catch (SQLException ex){
                 ex.printStackTrace();
             }
+            boolean result = dbConn.executePreparedStatement(insertStmt);
+            System.out.println(result);
         }
-        boolean result = dbConn.executePreparedStatement(insertStmt);
-        System.out.println(result);
         dbConn.closeConnections();
 
         request.setAttribute("studentid", id);
