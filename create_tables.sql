@@ -171,6 +171,7 @@ CREATE TABLE IF NOT EXISTS is_taking (
     courseID TEXT NOT NULL REFERENCES course(courseID),
     quarter quarter_enum NOT NULL,
     year INT NOT NULL,
+    units INT NOT NULL,
     PRIMARY KEY (studentID, courseID)
 );
 

@@ -58,7 +58,7 @@ public class CourseServlet extends HttpServlet {
 
         PreparedStatement stmtCourse = dbConn.getPreparedStatment("INSERT INTO course VALUES(?,?,?,?,?)");
         PreparedStatement stmtDept = dbConn.getPreparedStatment("INSERT INTO course_offered VALUES(?,?)");
-        PreparedStatement stmtCat = dbConn.getPreparedStatment("INSERT INTO category_has_courses VALUES(?,?)");
+        PreparedStatement stmtCat = dbConn.getPreparedStatment("INSERT INTO category_has_courses VALUES(?,?,?)");
         PreparedStatement stmtGrade = dbConn.getPreparedStatment("INSERT INTO course_grading_option VALUES(?,?)");
         try {
             stmtCourse.setString(1, courseID);
@@ -70,8 +70,9 @@ public class CourseServlet extends HttpServlet {
             stmtDept.setString(1, courseID);
             stmtDept.setString(2, department);
 
-            stmtCat.setString(1, category);
-            stmtCat.setString(2, courseID);
+            stmtCat.setString(1, department);
+            stmtCat.setString(2, category);
+            stmtCat.setString(3, courseID);
 
             stmtGrade.setString(1, courseID);
             stmtGrade.setString(2, gradingOption);

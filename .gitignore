@@ -35,3 +35,4 @@ insert_test.sql
 TODO.txt
 target/
 web/WEB-INF/classes
+out/
