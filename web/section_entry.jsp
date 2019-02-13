@@ -81,7 +81,7 @@
             $(document).ready(() => {
                 $(iframeFaculty).on('load', () => {
                     iframeFaculty.onload = (() => {
-                        location.reload();
+                        window.location.href = '/section_entry.jsp';
                     });
                 });
             });
