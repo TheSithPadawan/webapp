@@ -34,7 +34,7 @@ public class DegreeCategoryServlet extends HttpServlet{
         String jsonStr = sb.toString();
         final GsonBuilder builder = new GsonBuilder();
         DegreeCategory dct = builder.create().fromJson(jsonStr, DegreeCategory.class);
-
+        System.out.println("here");
         // insert into degree database
         util.insertDepartment(dbConn, dct.department);
         dbConn.openConnection();

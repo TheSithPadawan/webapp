@@ -1,5 +1,6 @@
 package main;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -40,6 +41,9 @@ public class UndergradServlet extends HttpServlet {
         dbConn.closeConnections();
 
         // go to the next step to fill out degree information
+        RequestDispatcher rd = request.getRequestDispatcher("/attend.jsp");
+        request.setAttribute("studentid", studentid);
+        rd.forward(request, response);
     }
 
 }

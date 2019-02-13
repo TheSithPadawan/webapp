@@ -139,7 +139,7 @@
         })
             .then((response) => {
             // response from POST
-                window.location.href="";
+                window.location.href="/index.jsp";
         });
     }
 
