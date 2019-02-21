@@ -281,3 +281,19 @@ CREATE TABLE IF NOT EXISTS category_has_courses (
     PRIMARY KEY (category_type, courseID),
     FOREIGN KEY (department, category_type) REFERENCES degree_has_categories(dept_name, category_type)
 );
+
+CREATE TABLE grade_conversion (
+    letter_grade CHAR(2) NOT NULL,
+    number_grade DECIMAL(2,1)
+);
+
+INSERT INTO grade_conversion values('A+', 4.3);
+INSERT INTO grade_conversion values('A', 4);
+INSERT INTO grade_conversion values('A-', 3.7);
+INSERT INTO grade_conversion values('B+', 3.4);
+INSERT INTO grade_conversion values('B', 3.1);
+INSERT INTO grade_conversion values('B-', 2.8);
+INSERT INTO grade_conversion values('C+', 2.5);
+INSERT INTO grade_conversion values('C', 2.2);
+INSERT INTO grade_conversion values('C-', 1.9);
+INSERT INTO grade_conversion values('D', 1.6);
