@@ -31,7 +31,7 @@
         ResultSet rs = dbConn.getResultSet();
     %>
 
-    <form action="/grade_report" method="post">
+    <form action="/grade_report" method="post" name="form1" id="form1">
         <div class="container">
             <div class="form-group">
                 <label>Currently Enrolled Students</label>
@@ -43,8 +43,25 @@
                 </select>
             </div>
 
-            <input type="submit" class="btn btn-primary">
+            <%
+                query = "SELECT * FROM degree";
+                dbConn.executeQuery(query);
+                rs = dbConn.getResultSet();
+            %>
+
+                <div class="form-group">
+                    <label>Degree Selections</label>
+                    <select name="get_degree" class="form-control">
+                        <% while (rs.next()) { %>
+                        <option value="<%=rs.getString("dept_name") + "|" + rs.getString("deg_type")%>"><%=rs.getString("dept_name")%> | <%=rs.getString("deg_type")%></option>
+                        <% } %>
+                    </select>
+                </div>
+
+            <input type="submit" name="check_grade" class="btn btn-primary" value="Check Grade Report">
+            <input type="submit" name="check_degree" class="btn btn-primary" value="Check Graduation Requirement">
         </div>
     </form>
+
 </body>
 </html>

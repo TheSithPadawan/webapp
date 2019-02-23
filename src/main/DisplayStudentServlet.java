@@ -1,3 +1,7 @@
+/*
+This servlet handles post request from
+displaying all students
+ */
 package main;
 
 import javax.servlet.RequestDispatcher;
@@ -16,7 +20,19 @@ public class DisplayStudentServlet extends HttpServlet {
         String studentssn = request.getParameter("get_student");
 
         request.setAttribute("ssn", studentssn);
-        RequestDispatcher rd = request.getRequestDispatcher("/student_grade.jsp");
-        rd.forward(request, response);
+
+        if (request.getParameter("check_grade") != null){
+            RequestDispatcher rd = request.getRequestDispatcher("/student_grade.jsp");
+            rd.forward(request, response);
+        }else if (request.getParameter("check_degree") != null)
+        {
+            String degree_selected = request.getParameter("get_degree");
+            String[] parts = degree_selected.split("|");
+            String dept_name = parts[0];
+            request.setAttribute("dept_name", dept_name);
+            System.out.println(degree_selected);
+            RequestDispatcher rd = request.getRequestDispatcher("/degree_req.jsp");
+            rd.forward(request, response);
+        }
     }
 }
