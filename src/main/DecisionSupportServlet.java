@@ -90,7 +90,7 @@ public class DecisionSupportServlet extends HttpServlet {
             }
         } else if (metric.equals("GPA")) {
             String formatQuery =
-                "SELECT faculty_taught.courseID, AVG(grade_conversion.number_grade) " +
+                "SELECT faculty_taught.courseID, AVG(grade_conversion.number_grade) AS avg_gpa " +
                 "FROM faculty_taught " +
                 "JOIN has_taken " +
                 "    ON faculty_taught.courseID = has_taken.courseID " +
@@ -107,7 +107,7 @@ public class DecisionSupportServlet extends HttpServlet {
             return;
         }
 
-        System.out.println(query);
+        // System.out.println(query);
 
         dbConn.executeQuery(query);
         ResultSet rs = dbConn.getResultSet();

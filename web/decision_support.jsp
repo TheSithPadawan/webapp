@@ -193,7 +193,7 @@
                     }
                 })
                 .then((json) => {
-                    console.log(json);
+                    console.log(JSON.stringify(json));
                     localStorage.setItem('prevResult', JSON.stringify(json, undefined, 4));
                     location.href = 'decision_support.jsp?' + bodyStr;
                 });
