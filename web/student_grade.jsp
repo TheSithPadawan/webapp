@@ -26,15 +26,18 @@
    String ssn = (String) request.getAttribute("ssn");
    System.out.println("getting the grade report for student with ssn " + ssn);
 %>
-<table>
-    <tr>
-        <th>Course ID</th>
-        <th>Section ID</th>
-        <th>Quarter</th>
-        <th>Year</th>
-        <th>Grade</th>
-        <th>Units</th>
-    </tr>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Course ID</th>
+            <th scope="col">Section ID</th>
+            <th scope="col">Quarter</th>
+            <th scope="col">Year</th>
+            <th scope="col">Grade</th>
+            <th scope="col">Units</th>
+        </tr>
+    </thead>
+    <tbody>
     <%
         DBConn dbConn = new DBConn();
         dbConn.openConnection();
@@ -47,7 +50,7 @@
         while (rs.next()){ %>
 
     <tr>
-        <td><%=rs.getString("courseid")%></td>
+        <td scope="row"><%=rs.getString("courseid")%></td>
         <td><%=rs.getString("sectionid")%></td>
         <td><%=rs.getString("quarter")%></td>
         <td><%=rs.getString("year")%></td>
@@ -56,6 +59,7 @@
     </tr>
     <% }
     %>
+    </tbody>
 </table>
 <br>
 <table>
@@ -67,7 +71,7 @@
     <%
         query = "SELECT quarter, year, sum(has_taken.units * grade_conversion.number_grade)/sum(has_taken.units) as gpa\n" +
                 "FROM (student join has_taken on student.studentid = has_taken.studentid)\n" +
-                "left join grade_conversion\n" +
+                "inner join grade_conversion\n" +
                 "  on has_taken.grade = grade_conversion.letter_grade\n" +
                 "where student.ssn = ? \n" +
                 "GROUP BY has_taken.quarter, has_taken.year";
@@ -82,6 +86,8 @@
     </tr>
     <% }
     %>
+    </tbody>
+
 </table>
 <br>
 <table>
@@ -91,7 +97,7 @@
     <%
         query = "SELECT sum(has_taken.units * grade_conversion.number_grade)/sum(has_taken.units) as gpa\n" +
                 "FROM (student join has_taken on student.studentid = has_taken.studentid)\n" +
-                "  left join grade_conversion\n" +
+                "  inner join grade_conversion\n" +
                 "    on has_taken.grade = grade_conversion.letter_grade\n" +
                 "where student.ssn = ?";
         stmt = dbConn.getPreparedStatment(query);

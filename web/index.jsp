@@ -5,6 +5,16 @@
   Time: 7:37 PM
   To change this template use File | Settings | File Templates.
 --%>
+<head>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script
+            src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
+    <title>Main Menu</title>
+</head>
 
 <div>
     <b>Part 2 - Data Entry Menu</b>
@@ -30,6 +40,9 @@
     <ul>
         <li><a href="ms_deg_req.jsp">MS Degree Requirements</a></li>
         <li><a href="decision_support.jsp">Decision Support</a></li>
+        <li><a href="current_classes.jsp">View Current Classes</a></li>
+        <li><a href="all_class.jsp">Class Roster</a></li>
+        <li><a href="display_all_students.jsp">Student Grade and Degree</a> </li>
     </ul>
 </div>
 <hr>

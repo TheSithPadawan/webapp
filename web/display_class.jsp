@@ -21,15 +21,19 @@
 </head>
 <body>
 <jsp:include page="index.jsp"/>
-<table>
-<tr>
-    <th>Course ID</th>
-    <th>Course Title</th>
-    <th>Section ID</th>
-    <th>Quarter</th>
-    <th>Year</th>
-    <th>Units</th>
-</tr>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Course ID</th>
+            <th scope="col">Course Title</th>
+            <th scope="col">Section ID</th>
+            <th scope="col">Quarter</th>
+            <th scope="col">Year</th>
+            <th scope="col">Units</th>
+        </tr>
+    </thead>
+    <tbody>
+
 <%
     String ssn = (String) request.getAttribute("ssn");
     System.out.println("ssn is " + ssn);
@@ -52,7 +56,7 @@
     ResultSet rs = stmt.executeQuery();
     while (rs.next()){ %>
         <tr>
-            <td><%=rs.getString("courseid")%></td>
+            <td scope="row"><%=rs.getString("courseid")%></td>
             <td><%=rs.getString("title")%></td>
             <td><%=rs.getString("sectionid")%></td>
             <td><%=rs.getString("quarter")%></td>
@@ -61,6 +65,7 @@
         </tr>
     <% }
     %>
+    </tbody>
 </table>
 <%
     rs.close();

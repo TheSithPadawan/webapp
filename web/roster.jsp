@@ -25,17 +25,21 @@
 
 <body>
 <jsp:include page="index.jsp"/>
-<table>
-<tr>
-    <th>Student SSN</th>
-    <th>Student ID</th>
-    <th>First Name</th>
-    <th>Middle Name</th>
-    <th>Last Name</th>
-    <th>Residency</th>
-    <th>Grading Option</th>
-    <th>Units</th>
-</tr>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Student SSN</th>
+            <th scope="col">Student ID</th>
+            <th scope="col">First Name</th>
+            <th scope="col">Middle Name</th>
+            <th scope="col">Last Name</th>
+            <th scope="col">Residency</th>
+            <th scope="col">Grading Option</th>
+            <th scope="col">Units</th>
+    </tr>
+    </thead>
+    <tbody>
+
 <%
     String classTitle = (String) request.getAttribute("title");
     DBConn dbConn = new DBConn();
@@ -60,7 +64,7 @@
     ResultSet rs = stmt.executeQuery();
     while (rs.next()){ %>
     <tr>
-        <td><%=rs.getInt("ssn")%></td>
+        <td scope="row"><%=rs.getInt("ssn")%></td>
         <td><%=rs.getString("studentid")%></td>
         <td><%=rs.getString("firstname")%></td>
         <td><%=rs.getString("middlename")%></td>
@@ -71,6 +75,7 @@
     </tr>
 <% }
 %>
+    </tbody>
 </table>
 <%
     rs.close();
