@@ -29,10 +29,11 @@ Notes.txt
 .project
 .settings/
 pom.xml
-insert_test.sql
+tmp.sql
 .idea/
 .vscode/
 TODO.txt
 target/
 web/WEB-INF/classes
 out/
+elliot.sql

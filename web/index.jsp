@@ -16,7 +16,7 @@
 </head>
 
 <div>
-    <b>Data Entry Menu</b>
+    <b>Part 2 - Data Entry Menu</b>
     <ul>
         <li><a href="student.jsp">Students</a></li>
         <li><a href="course_entry.jsp">Courses Entry Form</a></li>
@@ -34,5 +34,10 @@
         <li><a href="textbook_section.jsp">Textbook-Section Entry Form</a></li>
         <li><a href="department.jsp">Department Entry Form</a></li>
     </ul>
+    <br>
+    <b>Part 3 - Reports and Decision Support Queries</b>
+    <ul>
+        <li><a href="decision_support.jsp">Decision Support</a></li>
+    </ul>
 </div>
-<br>
+<hr>
