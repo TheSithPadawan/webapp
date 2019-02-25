@@ -6,17 +6,8 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<head>
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script
-            src="https://code.jquery.com/jquery-3.3.1.min.js"
-            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-            crossorigin="anonymous"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-</head>
-
 <div>
-    <b>Data Entry Menu</b>
+    <b>Part 2 - Data Entry Menu</b>
     <ul>
         <li><a href="student.jsp">Students</a></li>
         <li><a href="course_entry.jsp">Courses Entry Form</a></li>
@@ -34,5 +25,11 @@
         <li><a href="textbook_section.jsp">Textbook-Section Entry Form</a></li>
         <li><a href="department.jsp">Department Entry Form</a></li>
     </ul>
+    <br>
+    <b>Part 3 - Reports and Decision Support Queries</b>
+    <ul>
+        <li><a href="ms_deg_req.jsp">MS Degree Requirements</a></li>
+        <li><a href="decision_support.jsp">Decision Support</a></li>
+    </ul>
 </div>
-<br>
+<hr>
