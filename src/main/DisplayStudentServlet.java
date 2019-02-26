@@ -1,6 +1,8 @@
 /*
 This servlet handles post request from
-displaying all students
+displaying all students; for queries related to
+checking student grade and undergrad graduation requirement
+checking for student schedule conflict
  */
 package main;
 
@@ -26,12 +28,16 @@ public class DisplayStudentServlet extends HttpServlet {
             rd.forward(request, response);
         }else if (request.getParameter("check_degree") != null)
         {
+            // only deal with BS degree on this page
             String degree_selected = request.getParameter("get_degree");
-            String[] parts = degree_selected.split("|");
-            String dept_name = parts[0];
-            request.setAttribute("dept_name", dept_name);
+            request.setAttribute("dept_name", degree_selected);
             System.out.println(degree_selected);
             RequestDispatcher rd = request.getRequestDispatcher("/degree_req.jsp");
+            rd.forward(request, response);
+        }else if (request.getParameter("check_schedule") != null){
+            System.out.println("Got the request");
+            System.out.println("ssn " + studentssn);
+            RequestDispatcher rd = request.getRequestDispatcher("/conflict_schedule.jsp");
             rd.forward(request, response);
         }
     }

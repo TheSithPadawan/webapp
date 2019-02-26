@@ -25,12 +25,15 @@
 </head>
 <body>
     <jsp:include page="index.jsp"/>
-    <table>
+    <table class="table">
+        <thead>
         <tr>
-            <th>Category Types</th>
+            <th scope="col">Category Types</th>
             <th>Remaining Units</th>
         </tr>
+        </thead>
 
+    <tbody>
     <%
         int current_units;
         String ssn = (String) request.getAttribute("ssn");
@@ -52,15 +55,16 @@
         String view2 = "SELECT category2.category_type, category2.units\n" +
                 "INTO degree_reqs\n" +
                 "FROM degree join degree_has_categories category2 on degree.dept_name = category2.dept_name and degree.deg_type = category2.deg_type\n" +
-                "where degree.dept_name = 'CSE' and degree.deg_type = 'BS'";
-        Statement st = dbConn.getStatement();
-        st.execute(view2);
+                "where degree.dept_name = ? and degree.deg_type = 'BS'";
+        stmt = dbConn.getPreparedStatment(view2);
+        stmt.setString(1, dept_name);
+        stmt.executeUpdate();
 
         String view3 = "SELECT degree_reqs.category_type, COALESCE(degree_reqs.units - fullfilled_reqs.sum, degree_reqs.units) as remt\n" +
                 "INTO results\n" +
                 "FROM degree_reqs left join fullfilled_reqs\n" +
                 "    on degree_reqs.category_type = fullfilled_reqs.category_type";
-        st = dbConn.getStatement();
+        Statement st = dbConn.getStatement();
         st.execute(view3);
 
         String query = "SELECT * FROM results";
@@ -70,11 +74,12 @@
         while (rs.next()){
             current_units += rs.getInt("remt"); %>
             <tr>
-                <td><%=rs.getString("category_type")%></td>
+                <td scope="row"><%=rs.getString("category_type")%></td>
                 <td><%=rs.getInt("remt")%></td>
             </tr>
     <% }
     %>
+    </tbody>
     </table>
     <%
         String clean_up = "DROP TABLE fullfilled_reqs, degree_reqs, results";
