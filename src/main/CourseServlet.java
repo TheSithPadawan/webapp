@@ -10,11 +10,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/*
-todo:
-2. add category field to link course to category (operates the category_has_courses table)
- */
-
 @WebServlet("/course")
 public class CourseServlet extends HttpServlet {
     private static DBConn dbConn = new DBConn();
@@ -27,7 +22,6 @@ public class CourseServlet extends HttpServlet {
         Integer units_max = Integer.parseInt(request.getParameter("units_max"));
         Boolean consent = Boolean.parseBoolean(request.getParameter("consent"));
         String department = request.getParameter("department");
-        String category = request.getParameter("category");
         String gradingOption = request.getParameter("grading_option");
         String preqreqsStr = request.getParameter("prereqs");
         String[] preqreqArr = null;
@@ -58,7 +52,6 @@ public class CourseServlet extends HttpServlet {
 
         PreparedStatement stmtCourse = dbConn.getPreparedStatment("INSERT INTO course VALUES(?,?,?,?,?)");
         PreparedStatement stmtDept = dbConn.getPreparedStatment("INSERT INTO course_offered VALUES(?,?)");
-        PreparedStatement stmtCat = dbConn.getPreparedStatment("INSERT INTO category_has_courses VALUES(?,?,?)");
         PreparedStatement stmtGrade = dbConn.getPreparedStatment("INSERT INTO course_grading_option VALUES(?,?)");
         try {
             stmtCourse.setString(1, courseID);
@@ -69,10 +62,6 @@ public class CourseServlet extends HttpServlet {
 
             stmtDept.setString(1, courseID);
             stmtDept.setString(2, department);
-
-            stmtCat.setString(1, department);
-            stmtCat.setString(2, category);
-            stmtCat.setString(3, courseID);
 
             stmtGrade.setString(1, courseID);
             stmtGrade.setString(2, gradingOption);
@@ -99,27 +88,6 @@ public class CourseServlet extends HttpServlet {
             //     dbConn.closeConnections();
             //     return;
             // }
-            // dbConn.executePreparedStatement(stmt);
-            dbConn.closeConnections();
-            return;
-        }
-
-        boolean resultCat = dbConn.executePreparedStatement(stmtCat);
-        if (!resultCat) {
-            System.out.println("category statement failed!");
-            // PreparedStatement stmt = dbConn.getPreparedStatment("DELETE FROM course WHERE courseID=?");
-            // PreparedStatement stmt2 = dbConn.getPreparedStatment("DELETE FROM course_offered WHERE courseID=? AND category_type=?");
-            // try {
-            //     stmt.setString(1, courseID);
-            //     stmt2.setString(1, courseID);
-            //     stmt2.setString(2, department);
-            // } catch (SQLException ex) {
-            //     ex.printStackTrace();
-            //     dbConn.closeConnections();
-            //     return;
-            // }
-
-            // dbConn.executePreparedStatement(stmt2);
             // dbConn.executePreparedStatement(stmt);
             dbConn.closeConnections();
             return;
