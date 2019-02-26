@@ -183,6 +183,8 @@ CREATE TABLE IF NOT EXISTS students_enrolled (
     sectionID TEXT NOT NULL REFERENCES sections(sectionID),
     grading_option TEXT NOT NULL,
     units INT NOT NULL,
+    quarter quarter_enum NOT NULL,
+    year int,
     PRIMARY KEY (sectionID, studentID),
     CHECK (grading_option IN ('Letter', 'S/U'))
 );
@@ -222,7 +224,7 @@ CREATE TABLE IF NOT EXISTS has_weekly_meetings (
     time_end TIME NOT NULL,
     building TEXT NOT NULL,
     room TEXT NOT NULL,
-    type_meeting TEXT NOT NULL,
+    type_meeting meeting_enum NOT NULL,
     required BOOLEAN NOT NULL,
     PRIMARY KEY (sectionID, day, time_start, time_end)
 );

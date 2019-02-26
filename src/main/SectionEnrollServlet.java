@@ -67,13 +67,15 @@ public class SectionEnrollServlet extends HttpServlet {
         // else: add current student to the wait list
         String query = "";
         if (limit[1] < limit[0]){
-            query = "INSERT INTO students_enrolled VALUES (?,?,?,?)";
+            query = "INSERT INTO students_enrolled VALUES (?,?,?,?,?::quarter_enum,?)";
             stmt = dbConn.getPreparedStatment(query);
             try {
                 stmt.setString(1, es.studentID);
                 stmt.setString(2,es.sectionID);
                 stmt.setString(3,es.grading);
                 stmt.setInt(4, es.units);
+                stmt.setString(5, "WI");
+                stmt.setInt(6, 2019);
             }catch (SQLException ex){
                 System.out.println("Failed to insert statement " + query);
                 System.out.println(ex.getMessage());

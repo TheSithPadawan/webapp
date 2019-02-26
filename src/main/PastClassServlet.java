@@ -68,7 +68,7 @@ public class PastClassServlet extends HttpServlet {
         }
 
         PreparedStatement stmtTaken = dbConn.getPreparedStatment("INSERT INTO has_taken VALUES(?, ?, ?, ?::quarter_enum, ?, ?, ?)");
-        PreparedStatement stmtEnrolled = dbConn.getPreparedStatment("INSERT INTO students_enrolled VALUES(?, ?, ?, ?)");
+        PreparedStatement stmtEnrolled = dbConn.getPreparedStatment("INSERT INTO students_enrolled VALUES(?, ?, ?, ?, ?::quarter_enum, ?)");
         try {
             stmtTaken.setString(1, studentID);
             stmtTaken.setString(2, courseID);
@@ -82,6 +82,8 @@ public class PastClassServlet extends HttpServlet {
             stmtEnrolled.setString(2, sectionID);
             stmtEnrolled.setString(3, gradingOption);
             stmtEnrolled.setInt(4, units);
+            stmtEnrolled.setString(5, quarter);
+            stmtEnrolled.setInt(6, year);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
