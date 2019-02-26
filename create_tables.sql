@@ -94,16 +94,6 @@ CREATE TABLE IF NOT EXISTS sections (
     enrollment_limit INT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS weekly_meetings (
-    day day_enum NOT NULL,
-    time_start TIME NOT NULL,
-    time_end TIME NOT NULL,
-    building TEXT NOT NULL,
-    room TEXT NOT NULL,
-    type_meeting meeting_enum NOT NULL,
-    required_meeting BOOLEAN NOT NULL,
-    PRIMARY KEY (day, time_start, time_end, building, room)
-);
 
 CREATE TABLE IF NOT EXISTS textbook (
     isbn BIGINT NOT NULL PRIMARY KEY,
@@ -232,8 +222,9 @@ CREATE TABLE IF NOT EXISTS has_weekly_meetings (
     time_end TIME NOT NULL,
     building TEXT NOT NULL,
     room TEXT NOT NULL,
-    FOREIGN KEY (day, time_start, time_end, building, room) REFERENCES weekly_meetings(day, time_start, time_end, building, room),
-    PRIMARY KEY (sectionID, day, time_start, time_end, building, room)
+    type_meeting TEXT NOT NULL,
+    required BOOLEAN NOT NULL,
+    PRIMARY KEY (sectionID, day, time_start, time_end)
 );
 
 CREATE TABLE IF NOT EXISTS faculty_dept (
