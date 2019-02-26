@@ -53,7 +53,7 @@
                     <label>Degree Selections</label>
                     <select name="get_degree" class="form-control">
                         <% while (rs.next()) { %>
-                        <option value="<%=rs.getString("dept_name") + "|" + rs.getString("deg_type")%>"><%=rs.getString("dept_name")%> | <%=rs.getString("deg_type")%></option>
+                        <option value="<%=rs.getString("dept_name")%>"><%=rs.getString("dept_name")%> | <%=rs.getString("deg_type")%></option>
                         <% } %>
                     </select>
                 </div>

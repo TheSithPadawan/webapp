@@ -46,7 +46,8 @@
         <li><a href="decision_support.jsp">Decision Support</a></li>
         <li><a href="current_classes.jsp">View Current Classes</a></li>
         <li><a href="all_class.jsp">Class Roster</a></li>
-        <li><a href="display_all_students.jsp">Student Grade and Degree</a> </li>
+        <li><a href="display_all_students.jsp">Student Grade and Degree</a></li>
+        <li><a href="display_enrolled_students.jsp">Check Schedule Conflict</a></li>
     </ul>
 </div>
 <br><br>
