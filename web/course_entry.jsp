@@ -78,11 +78,6 @@
             </div>
 
             <div class="form-group">
-                <label>Category</label>
-                <input type="text" id="input_category" name="category" class="form-control">
-            </div>
-
-            <div class="form-group">
                 <label>Prerequisite Courses (hold Ctrl to select multiple)</label>
                 <select name="courseID" class="form-control" id="select_pre" multiple>
                     <% while (rs.next()) { %>
@@ -104,7 +99,6 @@
             const inputOption = document.getElementById('select_option');
             const inputConsent = document.getElementById('check_consent');
             const inputDept = document.getElementById('input_department');
-            const inputCategory = document.getElementById('input_category');
             const inputPre = document.getElementById('select_pre');
             const btnSubmit = document.getElementById('btn_submit');
 
@@ -116,7 +110,6 @@
                 let option = inputOption.value;
                 let consent = inputConsent.checked;
                 let dept = inputDept.value;
-                let cat = inputCategory.value;
                 let preArr = [];
                 let pres = inputPre.options;
                 for (let pre of pres) {
@@ -126,7 +119,7 @@
                 }
 
                 if (courseID === '' || min === '' || max === '' || max < min ||
-                    dept === '' || cat === '') {
+                    dept === '') {
                     alert('Invalid input.');
                     return;
                 } else if (preArr.includes(courseID)) {
@@ -149,7 +142,6 @@
                     'units_max': max,
                     'consent': consent,
                     'department': dept,
-                    'category': cat,
                     'grading_option': option,
                 });
 
@@ -168,10 +160,10 @@
                     headers: {
                       'Content-Type': 'application/x-www-form-urlencoded'
                     },
-                    redirect: 'follow',
+                    redirect: 'manual',
                     body: bodyStr
                 }).then((response) => {
-                    window.location.href = response.url;
+                    location.href = 'course_entry_category.jsp';
                 });
             }
         </script>

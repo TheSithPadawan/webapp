@@ -84,14 +84,14 @@
 
         <div class="container">
             <label>Metric</label>
-            <select id="select_metric" onchange="submit()" class="form-control">
+            <select id="select_metric" class="form-control">
                 <option value="Letter">Letter</option>
                 <option value="GPA">GPA</option>
             </select>
             <br>
 
             <label>Course ID</label>
-            <select id="select_courseid" onchange="submit()" class="form-control">
+            <select id="select_courseid" class="form-control">
                 <option value="" selected>Select a value</option>
                 <% while (rsCourse.next()) { %>
                     <option value="<%=rsCourse.getString("courseID")%>"><%=rsCourse.getString("courseID")%></option>
@@ -100,7 +100,7 @@
             <br>
 
             <label>Professor</label>
-            <select id="select_professor" onchange="submit()" class="form-control">
+            <select id="select_professor" class="form-control">
                 <option value="" selected>Select a value</option>
                 <% while (rsProf != null && rsProf.next()) { %>
                     <option value="<%=rsProf.getString("faculty_name")%>"><%=rsProf.getString("faculty_name")%></option>
@@ -109,7 +109,7 @@
             <br>
 
             <label>Quarter/Year</label>
-            <select id="select_qtr" onchange="submit()" class="form-control">
+            <select id="select_qtr" class="form-control">
                 <option value="" selected>Select a value</option>
                 <% while (rsQtr != null && rsQtr.next()) { %>
                     <option value="<%=rsQtr.getString("quarter")%> <%=rsQtr.getString("year")%>"><%=rsQtr.getString("quarter")%> <%=rsQtr.getString("year")%></option>
@@ -117,7 +117,7 @@
             </select>
             <br>
 
-            <input type="button" onclick="submit()" value="Refresh" class="btn btn-primary">
+            <input type="button" onclick="submit()" value="Submit" class="btn btn-primary">
 
             <br><br>
 

@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.sql.Statement;
 
 import com.google.gson.Gson;
 import com.google.gson.*;
@@ -41,7 +42,7 @@ public class MSDegreeRequirements extends HttpServlet {
 
     private JsonArray upcomingCourses(Integer ssn, String department) {
         String query =
-            "SELECT faculty_will_teach.courseID, faculty_will_teach.quarter, faculty_will_teach.year " +
+            "SELECT degree_has_categories.category_type AS concentration, faculty_will_teach.courseID, faculty_will_teach.quarter, faculty_will_teach.year " +
             "FROM faculty_will_teach " +
             "JOIN category_has_courses " +
             "    ON faculty_will_teach.courseID = category_has_courses.courseID " +
@@ -56,7 +57,7 @@ public class MSDegreeRequirements extends HttpServlet {
             "            WHERE student.ssn = %d " +
             "        )";
         String formattedQuery = String.format(query, department, ssn);
-        System.out.println(formattedQuery);
+        // System.out.println(formattedQuery);
 
         DBConn dbConn = new DBConn();
         dbConn.openConnection();
@@ -83,7 +84,7 @@ public class MSDegreeRequirements extends HttpServlet {
 
     private JsonArray hasCompleted(Integer ssn, String department) {
         String query =
-            "SELECT degree_has_categories.category_type as category, SUM(has_taken.units) as completed_units, AVG(grade_conversion.number_grade) as current_gpa " +
+            "SELECT degree_has_categories.category_type as concentration, SUM(has_taken.units) as completed_units, (SUM(has_taken.units * grade_conversion.number_grade)/SUM(has_taken.units)) as current_gpa " +
             "FROM degree_has_categories " +
             "JOIN category_has_courses " +
             "    ON degree_has_categories.dept_name = category_has_courses.department AND category_has_courses.category_type = degree_has_categories.category_type " +
@@ -95,9 +96,9 @@ public class MSDegreeRequirements extends HttpServlet {
             "    ON has_taken.grade = grade_conversion.letter_grade " +
             "WHERE degree_has_categories.dept_name = '%s' AND student.ssn = %d AND degree_has_categories.deg_type = 'MS' " +
             "GROUP BY degree_has_categories.category_type, degree_has_categories.units,  degree_has_categories.min_gpa " +
-            "HAVING (SUM(has_taken.units) >= degree_has_categories.units) AND (AVG(grade_conversion.number_grade) >= degree_has_categories.min_gpa) ";
+            "HAVING (SUM(has_taken.units) >= degree_has_categories.units) AND ((SUM(has_taken.units * grade_conversion.number_grade)/SUM(has_taken.units)) >= degree_has_categories.min_gpa) ";
         String formattedQuery = String.format(query, department, ssn);
-        System.out.println(formattedQuery);
+        // System.out.println(formattedQuery);
 
         DBConn dbConn = new DBConn();
         dbConn.openConnection();

@@ -66,12 +66,15 @@
         <input id="btn_submit" type="button" value="Submit" class="btn btn-primary" onclick="submit()">
         <hr>
 
-        <label>Finished categories</label>
+        <label>Finished concentrations</label>
         <samp><pre id="pre_finished_cat"></pre></samp>
         <br>
 
-        <label>Upcoming category courses</label>
+        <label>Upcoming concentration courses</label>
         <samp><pre id="upcoming_cat_courses"></pre></samp>
+
+        <hr>
+        <input type="button" class="btn" value="View graudation requirements" onclick="view_grad()">
     </div>
 
     <script>
@@ -79,6 +82,24 @@
         const selectMs = document.getElementById('select_ms');
         const preFinishedCat = document.getElementById('pre_finished_cat');
         const preUpcomingCatCourses = document.getElementById('upcoming_cat_courses');
+
+        function view_grad() {
+            let ssn = selectStudent.value;
+            let ms = selectMs.value;
+
+            if (ssn === '' || ms === '') {
+                alert('Check your input.');
+                return;
+            }
+
+            let bodyStr = $.param({
+                'ssn': ssn,
+                'dept_name': ms
+            });
+            console.log(bodyStr);
+
+            location.href = 'ms_deg_req_units.jsp?' + bodyStr;
+        }
 
         function submit() {
             preFinishedCat.innerText = '';

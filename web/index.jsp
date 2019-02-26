@@ -16,11 +16,12 @@
     <title>Main Menu</title>
 </head>
 
-<div>
-    <b>Part 2 - Data Entry Menu</b>
+<button data-toggle="collapse" data-target="#menu_data_entry" class="btn">Part 2 - Data Entry Menu</button>
+<div id="menu_data_entry" class="collapse">
     <ul>
         <li><a href="student.jsp">Students</a></li>
         <li><a href="course_entry.jsp">Courses Entry Form</a></li>
+        <li><a href="course_entry_category.jsp">Course Category Entry Form</a></li>
         <li><a href="class_entry.jsp">Classes Entry Form</a></li>
         <li><a href="section_entry.jsp">Section Entry Form</a></li>
         <li><a href="past_classes.jsp">Past Classes Entry Form</a></li>
@@ -35,8 +36,11 @@
         <li><a href="textbook_section.jsp">Textbook-Section Entry Form</a></li>
         <li><a href="department.jsp">Department Entry Form</a></li>
     </ul>
-    <br>
-    <b>Part 3 - Reports and Decision Support Queries</b>
+</div>
+<br><br>
+
+<button data-toggle="collapse" data-target="#menu_reports" class="btn">Part 3 - Reports and Decision Support Queries</button>
+<div id="menu_reports" class="collapse">
     <ul>
         <li><a href="ms_deg_req.jsp">MS Degree Requirements</a></li>
         <li><a href="decision_support.jsp">Decision Support</a></li>
@@ -45,4 +49,4 @@
         <li><a href="display_all_students.jsp">Student Grade and Degree</a> </li>
     </ul>
 </div>
-<hr>
+<br><br>
