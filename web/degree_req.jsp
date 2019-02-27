@@ -24,7 +24,7 @@
     <title>Degree Requirements</title>
 </head>
 <body>
-    <jsp:include page="index.jsp"/>
+    <jsp:include page="menu.jsp"/>
     <table class="table">
         <thead>
         <tr>

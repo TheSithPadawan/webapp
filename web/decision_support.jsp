@@ -80,7 +80,7 @@
     </script>
 
     <body>
-        <jsp:include page="index.jsp"/>
+        <jsp:include page="menu.jsp"/>
 
         <div class="container">
             <label>Metric</label>

@@ -15,7 +15,7 @@
     </head>
 
     <body>
-        <jsp:include page="index.jsp"/>
+        <jsp:include page="menu.jsp"/>
 
         <%
             String studentID = request.getParameter("studentID");

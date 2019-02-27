@@ -14,7 +14,7 @@
     </head>
 
     <body>
-        <jsp:include page="index.jsp"/>
+        <jsp:include page="menu.jsp"/>
 
         <%
             String sectionID = request.getParameter("sectionID");

@@ -19,7 +19,7 @@
     </head>
 </head>
 <body>
-<jsp:include page="index.jsp"/>
+<jsp:include page="menu.jsp"/>
 
 <form action = "/dept" method = "post">
     <div class="container">

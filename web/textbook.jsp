@@ -17,7 +17,7 @@
     </head>
 
     <body>
-        <jsp:include page="index.jsp"/>
+        <jsp:include page="menu.jsp"/>
 
         <form action="/textbook" method="POST">
             <div class="container">

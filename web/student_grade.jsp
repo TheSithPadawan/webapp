@@ -20,7 +20,7 @@
     <title>Student Grade History</title>
 </head>
 <body>
-<jsp:include page="index.jsp"/>
+<jsp:include page="menu.jsp"/>
 
 <%
    String ssn = (String) request.getAttribute("ssn");

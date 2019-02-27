@@ -13,7 +13,7 @@
     </head>
 
     <body>
-        <jsp:include page="index.jsp"/>
+        <jsp:include page="menu.jsp"/>
 
         <%
             DBConn dbConn = new DBConn();
