@@ -39,18 +39,14 @@
     System.out.println("ssn is " + ssn);
     DBConn dbConn = new DBConn();
     dbConn.openConnection();
-    String query = "SELECT is_taking.courseid, students_enrolled.sectionid, class.title, is_taking.quarter, is_taking.year, students_enrolled.units\n" +
-            "FROM is_taking, students_enrolled, class, student, has_sections\n" +
-            "where is_taking.studentid = students_enrolled.studentid\n" +
-            "      and\n" +
-            "      is_taking.courseid = class.courseid\n" +
-            "      and\n" +
-            "      class.quarter = 'WI' and class.year = 2019\n" +
-            "      and\n" +
-            "      student.studentid = is_taking.studentid\n" +
-            "      and\n" +
-            "      has_sections.courseid = is_taking.courseid and has_sections.sectionid = students_enrolled.sectionid\n" +
-            "      and student.ssn = ?";
+    String query = "SELECT students_enrolled.studentid, class.title, has_sections.courseid, has_sections.sectionid,\n" +
+            "  class.quarter, class.year, students_enrolled.units, students_enrolled.grading_option\n" +
+            "  FROM students_enrolled INNER JOIN has_sections on students_enrolled.sectionid = has_sections.sectionid\n" +
+            "  AND students_enrolled.quarter = has_sections.quarter AND students_enrolled.year = has_sections.year\n" +
+            "  INNER JOIN student on student.studentid = students_enrolled.studentid\n" +
+            "  INNER JOIN class on has_sections.courseid = class.courseid AND has_sections.quarter =\n" +
+            "      class.quarter and has_sections.year = class.year\n" +
+            "WHERE students_enrolled.quarter = 'WI' AND students_enrolled.year = 2019 AND student.ssn = ?";
     PreparedStatement stmt = dbConn.getPreparedStatment(query);
     stmt.setInt(1, Integer.parseInt(ssn));
     ResultSet rs = stmt.executeQuery();
