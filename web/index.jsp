@@ -48,6 +48,7 @@
         <li><a href="all_class.jsp">Class Roster</a></li>
         <li><a href="display_all_students.jsp">Student Grade and Degree</a></li>
         <li><a href="display_enrolled_students.jsp">Check Schedule Conflict</a></li>
+        <li><a href="review_schedule.jsp">Review Session Scheduling</a></li>
     </ul>
 </div>
 <br><br>
