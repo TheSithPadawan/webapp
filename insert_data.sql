@@ -11,21 +11,6 @@ INSERT INTO student (ssn, residency, studentid, firstname, middlename, lastname,
                                                                                                      'FN1236', 'MN1236', 'LN1236', true );
 INSERT INTO student (ssn, residency, studentid, firstname, middlename, lastname, enrollment) VALUES (1325, 'CA US', 'A1325',
                                                                                                      'FN1325', NULL, 'LN1325', true );
--- create some undergrad
-INSERT INTO undergrad(studentid, major, minor, college) VALUES ('A123', 'CSE', 'MATH', 'MUIR');
-INSERT INTO undergrad(studentid, major, minor, college) VALUES ('A122', 'CSE', 'ARTS', 'WARREN');
-INSERT INTO undergrad(studentid, major, minor, college) VALUES ('A125', 'CSE', 'MUSIC', 'SIXTH');
-INSERT INTO undergrad(studentid, major, minor, college) VALUES ('A1234', 'CSE', 'ECE', 'MUIR');
-
--- create some ms
-INSERT INTO ms(studentid, department) VALUES ('A1236', 'CSE');
-INSERT INTO ms(studentid, department) VALUES ('A1325', 'CSE');
-INSERT INTO ms_thesis_committee(studentid, faculty_name) VALUES ('A1236', 'Gary');
-INSERT INTO ms_thesis_committee(studentid, faculty_name) VALUES ('A1325', 'Alex Snoeren');
-
--- create some phd
-
-
 
 -- create some department
 INSERT INTO department(name) VALUES ('CSE');
@@ -45,6 +30,21 @@ INSERT INTO faculty (name, title) VALUES ('John Doe', 'Associate Professor');
 INSERT INTO faculty_dept (faculty_name, dept_name) VALUES ('John Doe', 'MATH');
 INSERT INTO faculty (name, title) VALUES ('Jane Doe', 'Lecturer');
 INSERT INTO faculty_dept (faculty_name, dept_name) VALUES ('Jane Doe', 'ECE');
+
+
+-- create some undergrad
+INSERT INTO undergrad(studentid, major, minor, college) VALUES ('A123', 'CSE', 'MATH', 'MUIR');
+INSERT INTO undergrad(studentid, major, minor, college) VALUES ('A122', 'CSE', 'ARTS', 'WARREN');
+INSERT INTO undergrad(studentid, major, minor, college) VALUES ('A125', 'CSE', 'MUSIC', 'SIXTH');
+INSERT INTO undergrad(studentid, major, minor, college) VALUES ('A1234', 'CSE', 'ECE', 'MUIR');
+
+-- create some ms
+INSERT INTO ms(studentid, department) VALUES ('A1236', 'CSE');
+INSERT INTO ms(studentid, department) VALUES ('A1325', 'CSE');
+INSERT INTO ms_thesis_committee(studentid, faculty_name) VALUES ('A1236', 'Gary');
+INSERT INTO ms_thesis_committee(studentid, faculty_name) VALUES ('A1325', 'Alex Snoeren');
+
+-- create some phd
 
 -- create some courses
 INSERT INTO course(courseid, lab, units_min, units_max, consent) VALUES ('CSE8', TRUE,

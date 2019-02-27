@@ -26,7 +26,7 @@ public class WeeklyServlet extends HttpServlet {
         String sectionID = request.getParameter("sectionID");
 
         dbConn.openConnection();
-        PreparedStatement stmtHas = dbConn.getPreparedStatment("INSERT INTO has_weekly_meetings VALUES(?, ?::day_enum, ?::TIME, ?::TIME, ?, ?, ?, ?)");
+        PreparedStatement stmtHas = dbConn.getPreparedStatment("INSERT INTO has_weekly_meetings VALUES(?, ?::day_enum, ?::TIME, ?::TIME, ?, ?, ?::meeting_enum, ?)");
         try {
             stmtHas.setString(1, sectionID);
             stmtHas.setString(2, day);
