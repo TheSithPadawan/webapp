@@ -24,13 +24,13 @@
 <button data-toggle="collapse" data-target="#menu_reports" class="btn">Part 3 - Reports and Decision Support Queries</button>
 <div id="menu_reports" class="collapse">
     <ul>
-        <li><a href="ms_deg_req.jsp">MS Degree Requirements</a></li>
-        <li><a href="decision_support.jsp">Decision Support</a></li>
         <li><a href="current_classes.jsp">View Current Classes</a></li>
         <li><a href="all_class.jsp">Class Roster</a></li>
         <li><a href="display_all_students.jsp">Student Grade and Degree</a></li>
+        <li><a href="ms_deg_req.jsp">MS Degree Requirements</a></li>
         <li><a href="display_enrolled_students.jsp">Check Schedule Conflict</a></li>
         <li><a href="review_schedule.jsp">Review Session Scheduling</a></li>
+        <li><a href="decision_support.jsp">Decision Support</a></li>
     </ul>
 </div>
 <br><br>
