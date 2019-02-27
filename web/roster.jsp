@@ -34,6 +34,7 @@
             <th scope="col">Middle Name</th>
             <th scope="col">Last Name</th>
             <th scope="col">Residency</th>
+            <th scope="col">Section ID</th>
             <th scope="col">Grading Option</th>
             <th scope="col">Units</th>
     </tr>
@@ -41,26 +42,21 @@
     <tbody>
 
 <%
-    String classTitle = (String) request.getAttribute("title");
+    String courseID = (String) request.getAttribute("courseid");
+    String quarter = (String) request.getAttribute("quarter");
+    String year = (String) request.getAttribute("year");
     DBConn dbConn = new DBConn();
     dbConn.openConnection();
-    String query = "SELECT student.ssn, student.studentid, student.firstname, student.middlename, student.lastname, student.residency,\n" +
-            "  students_enrolled.grading_option, students_enrolled.units\n" +
-            "FROM class, students_enrolled, student, has_sections\n" +
-            "where\n" +
-            "  class.courseid = has_sections.courseid\n" +
-            "and\n" +
-            "  has_sections.sectionid = students_enrolled.sectionid\n" +
-            "and\n" +
-            "  student.studentid = students_enrolled.studentid\n" +
-            "and\n" +
-            "  class.title=?\n" +
-            "and\n" +
-            "  class.quarter = 'WI'\n" +
-            "and\n" +
-            "  class.year = 2019";
+    String query = "SELECT student.ssn, students_enrolled.studentid, student.firstname, student.middlename, student.lastname,student.residency,\n" +
+            "  students_enrolled.sectionid, students_enrolled.grading_option, students_enrolled.units\n" +
+            "FROM students_enrolled INNER JOIN has_sections on has_sections.sectionid = students_enrolled.sectionid\n" +
+            "INNER JOIN class on class.courseid = has_sections.courseid AND class.quarter = students_enrolled.quarter AND class.year =\n" +
+            "    students_enrolled.year INNER JOIN student on student.studentid = students_enrolled.studentid\n" +
+            "WHERE class.quarter = ?::quarter_enum and class.year = ? and class.courseid = ?";
     PreparedStatement stmt = dbConn.getPreparedStatment(query);
-    stmt.setString(1, classTitle);
+    stmt.setString(1, quarter);
+    stmt.setInt(2, Integer.parseInt(year));
+    stmt.setString(3, courseID);
     ResultSet rs = stmt.executeQuery();
     while (rs.next()){ %>
     <tr>
@@ -70,6 +66,7 @@
         <td><%=rs.getString("middlename")%></td>
         <td><%=rs.getString("lastname")%></td>
         <td><%=rs.getString("residency")%></td>
+        <td><%=rs.getString("sectionid")%></td>
         <td><%=rs.getString("grading_option")%></td>
         <td><%=rs.getInt("units")%></td>
     </tr>

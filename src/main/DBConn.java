@@ -16,7 +16,11 @@ public class DBConn{
     public Statement stmt;
     public ResultSet rs;
     public DBConn(){
-        this.connectionUrl = "jdbc:postgresql://localhost:5432/cse132b";
+
+        // this.connectionUrl = "jdbc:postgresql://localhost:5432/cse132b";
+
+        // run on test database only
+        this.connectionUrl = "jdbc:postgresql://localhost:5432/test";
     }
 
     public void openConnection(){

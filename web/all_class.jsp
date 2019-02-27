@@ -36,7 +36,7 @@
             <label>Currently Enrolled Students</label>
             <select name="class" class="form-control">
                 <% while (rs.next()) { %>
-                <option value="<%=rs.getString("title")%>"><%=rs.getString("courseid")%> | <%=rs.getString("title")%> | <%=rs.getString("quarter")%>
+                <option value="<%=rs.getString("courseid")+"-"+rs.getString("quarter")+ "-"+rs.getString("year")%>"><%=rs.getString("courseid")%> | <%=rs.getString("title")%> | <%=rs.getString("quarter")%>
                     | <%=rs.getString("year")%></option>
                 <% } %>
             </select>

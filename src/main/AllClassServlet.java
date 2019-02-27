@@ -12,10 +12,12 @@ import java.io.IOException;
 public class AllClassServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String classTitle = request.getParameter("class");
-        System.out.println(classTitle);
-
-        request.setAttribute("title", classTitle);
+        String classIdentifier = request.getParameter("class");
+        System.out.println(classIdentifier);
+        String[] parts = classIdentifier.split("-");
+        request.setAttribute("courseid", parts[0]);
+        request.setAttribute("quarter", parts[1]);
+        request.setAttribute("year", parts[2]);
         RequestDispatcher rd = request.getRequestDispatcher("/roster.jsp");
         rd.forward(request, response);
     }

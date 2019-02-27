@@ -40,6 +40,7 @@ public class SectionServlet extends HttpServlet {
             stmtSection.setString(1, sectionID);
             stmtSection.setInt(2, enrollment_limit);
             // stmtSectionDel.setString(1, sectionID);
+            System.out.println(stmtSection);
 
             stmtHasSections.setString(1, courseID);
             stmtHasSections.setString(2, sectionID);
