@@ -70,7 +70,8 @@
         String query = "SELECT not_taking.courseid, not_taking.sectionid, class.title\n" +
                 "  FROM current_schedule INNER JOIN not_taking on not_taking.day = current_schedule.day\n" +
                 "  AND not_taking.time_start < current_schedule.time_end AND not_taking.time_end > current_schedule.time_start\n" +
-                "  INNER JOIN class on not_taking.courseid = class.courseid AND class.quarter = 'WI' and class.year = 2019";
+                "  INNER JOIN class on not_taking.courseid = class.courseid AND class.quarter = 'WI' and class.year = 2019\n" +
+                "  GROUP BY not_taking.courseid, not_taking.sectionid, class.title";
         stmt = dbConn.getPreparedStatment(query);
         ResultSet rs = stmt.executeQuery();
         while (rs.next()){
