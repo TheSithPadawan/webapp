@@ -66,7 +66,7 @@
         <input id="btn_submit" type="button" value="Submit" class="btn btn-primary" onclick="submit()">
         <hr>
 
-        <label>Remaining category units</label>
+        <label>Remaining categories</label>
         <samp><pre id="pre_remaining_cat"></pre></samp>
         <br>
 
@@ -147,7 +147,7 @@
                 let upcomingStr = JSON.stringify(upcoming, undefined, 4);
                 let finished = json['completed_categories'];
                 let finishedStr = JSON.stringify(finished, undefined, 4);
-                let catRemaining = json['category_remaining_units'];
+                let catRemaining = json['category_remaining'];
                 let catRemainingStr = JSON.stringify(catRemaining, undefined, 4);
                 let degRemaining = json['degree_remaining_units'];
                 let degRemainingStr = JSON.stringify(degRemaining, undefined, 4);
