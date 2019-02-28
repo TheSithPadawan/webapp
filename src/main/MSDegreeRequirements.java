@@ -83,7 +83,7 @@ public class MSDegreeRequirements extends HttpServlet {
 
     private JsonArray hasCompleted(Integer ssn, String department) {
         String query =
-            "SELECT degree_has_categories.category_type as concentration, SUM(has_taken.units) as completed_units, (SUM(has_taken.units * grade_conversion.number_grade)/SUM(has_taken.units)) as current_gpa " +
+            "SELECT degree_has_categories.category_type as concentration, SUM(has_taken.units) as completed_units, degree_has_categories.min_gpa AS min_gpa, (SUM(has_taken.units * grade_conversion.number_grade)/SUM(has_taken.units)) AS current_gpa " +
             "FROM degree_has_categories " +
             "JOIN category_has_courses " +
             "    ON degree_has_categories.dept_name = category_has_courses.department AND category_has_courses.category_type = degree_has_categories.category_type " +
@@ -164,7 +164,8 @@ public class MSDegreeRequirements extends HttpServlet {
             "JOIN grade_conversion " +
             "    ON has_taken.grade = grade_conversion.letter_grade " +
             "WHERE degree_has_categories.deg_type = 'MS' AND degree_has_categories.dept_name = '%s' AND student.ssn = %d AND has_taken.grade = ANY ('{A+,A,A-,B+,B,B-,C+,C,C-,D,S}') " +
-            "GROUP BY degree_has_categories.category_type, degree_has_categories.units, degree_has_categories.min_gpa";
+            "GROUP BY degree_has_categories.category_type, degree_has_categories.units, degree_has_categories.min_gpa " +
+            "HAVING (((degree_has_categories.units - SUM(has_taken.units)) > 0) OR ((SUM(has_taken.units * grade_conversion.number_grade)/SUM(has_taken.units)) < min_gpa))";
         String formattedQuery = String.format(query, department, ssn);
 
         DBConn dbConn = new DBConn();
