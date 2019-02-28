@@ -125,7 +125,8 @@ public class ReviewScheduleServlet extends HttpServlet {
             "JOIN has_weekly_meetings " +
             "    ON has_weekly_meetings.sectionID = students_enrolled.sectionID " +
             "WHERE has_weekly_meetings.day = '%s'::day_enum " +
-            "    AND has_weekly_meetings.time_start < '%s' AND has_weekly_meetings.time_end > '%s'";
+            "    AND has_weekly_meetings.time_start < '%s' AND has_weekly_meetings.time_end > '%s' " +
+            "    AND students_enrolled.quarter = 'WI'::quarter_enum AND students_enrolled.year = 2019";
         String formattedQuery = String.format(query, sectionID, sqlDay, endStr, startStr);
 
         try {

@@ -66,20 +66,28 @@
         <input id="btn_submit" type="button" value="Submit" class="btn btn-primary" onclick="submit()">
         <hr>
 
-        <label>Finished concentrations</label>
+        <label>Remaining category units</label>
+        <samp><pre id="pre_remaining_cat"></pre></samp>
+        <br>
+
+        <label>Remaining degree units</label>
+        <samp><pre id="pre_remaining_deg"></pre></samp>
+        <br>
+
+        <label>Finished categories</label>
         <samp><pre id="pre_finished_cat"></pre></samp>
         <br>
 
-        <label>Upcoming concentration courses</label>
+        <label>Upcoming courses</label>
         <samp><pre id="upcoming_cat_courses"></pre></samp>
 
-        <hr>
-        <input type="button" class="btn" value="View graudation requirements" onclick="view_grad()">
     </div>
 
     <script>
         const selectStudent = document.getElementById('select_student');
         const selectMs = document.getElementById('select_ms');
+        const preRemainingCat = document.getElementById('pre_remaining_cat');
+        const preRemainingDeg = document.getElementById('pre_remaining_deg');
         const preFinishedCat = document.getElementById('pre_finished_cat');
         const preUpcomingCatCourses = document.getElementById('upcoming_cat_courses');
 
@@ -139,7 +147,13 @@
                 let upcomingStr = JSON.stringify(upcoming, undefined, 4);
                 let finished = json['completed_categories'];
                 let finishedStr = JSON.stringify(finished, undefined, 4);
+                let catRemaining = json['category_remaining_units'];
+                let catRemainingStr = JSON.stringify(catRemaining, undefined, 4);
+                let degRemaining = json['degree_remaining_units'];
+                let degRemainingStr = JSON.stringify(degRemaining, undefined, 4);
 
+                preRemainingCat.innerText = catRemainingStr;
+                preRemainingDeg.innerText = degRemainingStr;
                 preFinishedCat.innerText = finishedStr;
                 preUpcomingCatCourses.innerText = upcomingStr;
             });
