@@ -42,14 +42,14 @@
         DBConn dbConn = new DBConn();
         dbConn.openConnection();
 
-        // compute what the student already has
+        // compute what the student already has; only consider passed courses, meaning GPA >= 2.4 for each individual course
         String view1 = "SELECT category_has_courses.department, category_has_courses.category_type, sum(h2.units) as sum\n" +
-                "INTO fullfilled_reqs\n" +
-                "FROM (student join has_taken h2 on student.studentid = h2.studentid)\n" +
+                "INTO fullfilled_reqs FROM (student join has_taken h2 on student.studentid = h2.studentid)\n" +
                 "  join category_has_courses on category_has_courses.courseid = h2.courseid\n" +
-                "where student.ssn =?\n" +
+                "  join grade_conversion on grade_conversion.letter_grade = h2.grade\n" +
+                "where student.ssn = ? AND grade_conversion.number_grade >= 2.4\n" +
                 "group by category_has_courses.category_type, category_has_courses.department\n" +
-                "HAVING category_has_courses.department =?";
+                "HAVING category_has_courses.department = ?";
 
         PreparedStatement stmt = dbConn.getPreparedStatment(view1);
         stmt.setInt(1, Integer.parseInt(ssn));
