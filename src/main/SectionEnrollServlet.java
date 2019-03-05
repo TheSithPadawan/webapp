@@ -23,6 +23,7 @@ public class SectionEnrollServlet extends HttpServlet {
     private static DBConn dbConn = new DBConn();
 
     @Override
+    //TODO: Catch the enrollment limit exceeded from database trigger then add to waitlist
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // read post request
         StringBuilder sb = new StringBuilder();
@@ -37,80 +38,36 @@ public class SectionEnrollServlet extends HttpServlet {
         EnrollSection es = builder.create().fromJson(jsonStr, EnrollSection.class);
 
         dbConn.openConnection();
-        // first check if the section is full
-        // get enrollment limit for current section
-        int[] limit = new int[2];
-        PreparedStatement stmt = dbConn.getPreparedStatment("SELECT * FROM sections WHERE sectionid = ?");
+
+        String query = "INSERT INTO students_enrolled VALUES (?,?,?,?,?::quarter_enum,?)";
+        PreparedStatement stmt = dbConn.getPreparedStatment(query);
         try {
-            stmt.setString(1, es.sectionID);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()){
-                limit[0] = rs.getInt("enrollment_limit");
-            }
-        }catch (SQLException ex){
+            stmt.setString(1, es.studentID);
+            stmt.setString(2, es.sectionID);
+            stmt.setString(3, es.grading);
+            stmt.setInt(4, es.units);
+            stmt.setString(5, "WI");
+            stmt.setInt(6, 2019);
+        } catch (SQLException ex) {
+            System.out.println("Failed to insert statement " + query);
             System.out.println(ex.getMessage());
         }
+        dbConn.executePreparedStatement(stmt);
 
-        // get the number of currently enrolled student
-        stmt = dbConn.getPreparedStatment("SELECT Count(*) FROM students_enrolled WHERE sectionid = ?");
+        // add to student's load in current quarter
+        query = "INSERT INTO is_taking VALUES (?,?,?::quarter_enum,?,?)";
+        stmt = dbConn.getPreparedStatment(query);
         try {
-            stmt.setString(1, es.sectionID);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()){
-                limit[1] = rs.getInt(1);
-            }
-        }catch (SQLException ex){
+            stmt.setString(1, es.studentID);
+            stmt.setString(2, es.courseID);
+            stmt.setString(3, "WI");
+            stmt.setInt(4, 2019);
+            stmt.setInt(5, es.units);
+        } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
-
-        // if currently enrolled < limit --> enroll current student
-        // else: add current student to the wait list
-        String query = "";
-        if (limit[1] < limit[0]){
-            query = "INSERT INTO students_enrolled VALUES (?,?,?,?,?::quarter_enum,?)";
-            stmt = dbConn.getPreparedStatment(query);
-            try {
-                stmt.setString(1, es.studentID);
-                stmt.setString(2,es.sectionID);
-                stmt.setString(3,es.grading);
-                stmt.setInt(4, es.units);
-                stmt.setString(5, "WI");
-                stmt.setInt(6, 2019);
-            }catch (SQLException ex){
-                System.out.println("Failed to insert statement " + query);
-                System.out.println(ex.getMessage());
-            }
-            dbConn.executePreparedStatement(stmt);
-
-            // add to student's load in current quarter
-            query = "INSERT INTO is_taking VALUES (?,?,?::quarter_enum,?,?)";
-            stmt = dbConn.getPreparedStatment(query);
-            try {
-                stmt.setString(1, es.studentID);
-                stmt.setString(2,es.courseID);
-                stmt.setString(3,"WI");
-                stmt.setInt(4,2019);
-                stmt.setInt(5, es.units);
-            }catch (SQLException ex){
-                System.out.println(ex.getMessage());
-            }
-            dbConn.executePreparedStatement(stmt);
-        } else {
-            query = "INSERT INTO students_waitlisted VALUES (?,?)";
-            stmt = dbConn.getPreparedStatment(query);
-            try {
-                stmt.setString(1, es.studentID);
-                stmt.setString(2,es.sectionID);
-            }catch (SQLException ex){
-                System.out.println(ex.getMessage());
-            }
-            dbConn.executePreparedStatement(stmt);
-        }
+        dbConn.executePreparedStatement(stmt);
         dbConn.closeConnections();
-
-//        RequestDispatcher rd = request.getRequestDispatcher("/course_enrollment.jsp");
-//        rd.forward(request, response);
-
     }
 }
 

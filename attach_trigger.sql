@@ -22,3 +22,47 @@ CREATE TRIGGER check_val_before_insert
   ON has_weekly_meetings
   FOR EACH ROW
   EXECUTE PROCEDURE check_meeting_times();
+
+-- DROP IF NECESSARY
+-- DROP TRIGGER check_val_before_insert ON has_weekly_meetings;
+
+-- trigger 2: check for enrollment limit
+CREATE OR REPLACE FUNCTION check_enrollment_limit()
+  RETURNS trigger AS
+$$
+DECLARE enroll_limit integer;
+DECLARE current_num integer;
+BEGIN
+  -- pre compute
+  CREATE TABLE current_enrollment AS
+    SELECT students_enrolled.sectionid, count(*) AS sum
+    FROM students_enrolled
+    GROUP BY students_enrolled.sectionid;
+  SELECT sections.enrollment_limit INTO enroll_limit
+  FROM sections WHERE sections.sectionid = NEW.sectionid;
+  SELECT current_enrollment.sum INTO current_num
+  FROM current_enrollment WHERE current_enrollment.sectionid = NEW.sectionid;
+  IF (current_num >= enroll_limit) THEN
+    -- raise exception here
+    BEGIN
+      RAISE EXCEPTION 'Enrollment limit exceeded for section %', NEW.sectionid;
+      -- clean up
+      DROP TABLE current_enrollment;
+      RETURN NULL;
+    END;
+  END IF;
+  -- clean up
+  DROP TABLE current_enrollment;
+  RETURN NEW;
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE TRIGGER check_limit_before_insert
+  BEFORE INSERT
+  ON students_enrolled
+  FOR EACH ROW
+EXECUTE PROCEDURE check_enrollment_limit();
+
+-- DROP IF NECESSARY
+-- DROP TRIGGER check_limit_before_insert ON students_enrolled;
