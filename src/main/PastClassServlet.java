@@ -67,16 +67,29 @@ public class PastClassServlet extends HttpServlet {
             return;
         }
 
-        PreparedStatement stmtTaken = dbConn.getPreparedStatment("INSERT INTO has_taken VALUES(?, ?, ?, ?::quarter_enum, ?, ?, ?)");
+        /*
+            change here to upsert statement to support updating a student's grade
+            insert will fail if update has been executed
+         */
+        String query = "UPDATE has_taken SET grade = ? WHERE studentid = ? AND sectionid = ?;\n" +
+                "INSERT INTO has_taken (studentid, courseid, sectionid, quarter, year, grade, units)\n" +
+                "  SELECT ?, ?, ?, ?::quarter_enum, ?, ?, ?\n" +
+                "  WHERE NOT EXISTS (SELECT * FROM has_taken WHERE studentid = ? AND sectionid = ?)";
+        PreparedStatement stmtTaken = dbConn.getPreparedStatment(query);
         PreparedStatement stmtEnrolled = dbConn.getPreparedStatment("INSERT INTO students_enrolled VALUES(?, ?, ?, ?, ?::quarter_enum, ?)");
         try {
-            stmtTaken.setString(1, studentID);
-            stmtTaken.setString(2, courseID);
+            stmtTaken.setString(1, grade);
+            stmtTaken.setString(2, studentID);
             stmtTaken.setString(3, sectionID);
-            stmtTaken.setString(4, quarter);
-            stmtTaken.setInt(5, year);
-            stmtTaken.setString(6, grade);
-            stmtTaken.setInt(7, units);
+            stmtTaken.setString(4, studentID);
+            stmtTaken.setString(5, courseID);
+            stmtTaken.setString(6, sectionID);
+            stmtTaken.setString(7, quarter);
+            stmtTaken.setInt(8, year);
+            stmtTaken.setString(9, grade);
+            stmtTaken.setInt(10, units);
+            stmtTaken.setString(11, studentID);
+            stmtTaken.setString(12, sectionID);
 
             stmtEnrolled.setString(1, studentID);
             stmtEnrolled.setString(2, sectionID);

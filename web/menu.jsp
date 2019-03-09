@@ -34,3 +34,11 @@
     </ul>
 </div>
 <br><br>
+
+<button data-toggle="collapse" data-target="#materialized_view" class="btn">Part 5 - Materialized Views</button>
+<div id="materialized_view" class="collapse">
+    <ul>
+        <li><a href="materialized_view1.jsp">Grade Breakdown By Quarter</a></li>
+    </ul>
+</div>
+<br><br>
