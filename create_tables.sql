@@ -290,3 +290,14 @@ INSERT INTO grade_conversion values('C+', 2.5);
 INSERT INTO grade_conversion values('C', 2.2);
 INSERT INTO grade_conversion values('C-', 1.9);
 INSERT INTO grade_conversion values('D', 1.6);
+
+-- part 5 materialized view
+CREATE MATERIALIZED VIEW grade_aggregate AS
+    SELECT has_taken.courseid, taught_by.faculty_name, has_taken.quarter, has_taken.year,
+        COUNT(*) FILTER (WHERE grade = ANY ('{A+,A,A-}')) AS A,
+        COUNT(*) FILTER (WHERE grade = ANY ('{B+,B,B-}')) AS B,
+        COUNT(*) FILTER (WHERE grade = ANY ('{C+,C,C-}')) AS C,
+        COUNT(*) FILTER (WHERE grade = 'D') AS D,
+        COUNT(*) FILTER (WHERE NOT grade = ANY ('{A+,A,A-,B+,B,B-,C+,C,C-,D}')) AS other
+    FROM has_taken INNER JOIN taught_by on has_taken.sectionid = taught_by.sectionid
+    GROUP BY has_taken.courseid, taught_by.faculty_name, has_taken.quarter, has_taken.year;
