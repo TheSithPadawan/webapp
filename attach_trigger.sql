@@ -130,6 +130,57 @@ EXECUTE PROCEDURE check_faculty_schedule();
 -- DROP IF NECESSARY
 -- DROP TRIGGER check_faculty_schedule_before_insert ON faculty_taught;
 
+-- check for conflicting reviews
+CREATE OR REPLACE FUNCTION check_review_conflicts()
+  RETURNS trigger AS
+$$
+BEGIN
+  -- precompute faculty schedule
+  CREATE TABLE temp_faculty_review AS
+    SELECT *
+    FROM taught_by
+    WHERE sectionid = NEW.sectionid;
+
+  CREATE TABLE faculty_schedule AS
+    SELECT review_session.sectionid,
+      review_session.date_of,
+      review_session.time_start,
+      review_session.time_end,
+      taught_by.faculty_name
+    FROM review_session
+    JOIN taught_by
+      ON taught_by.sectionid = review_session.sectionid
+    JOIN temp_faculty_review
+      ON temp_faculty_review.faculty_name = taught_by.faculty_name;
+
+  IF EXISTS (
+    SELECT *
+    FROM faculty_schedule
+    WHERE faculty_schedule.date_of = NEW.date_of
+      AND faculty_schedule.time_start < NEW.time_end
+      AND faculty_schedule.time_end > NEW.time_start) THEN
+    BEGIN
+      RAISE EXCEPTION 'Time conflict for review session';
+        DROP TABLE temp_faculty_review;
+      DROP TABLE faculty_schedule;
+      RETURN NULL;
+    END;
+  END IF;
+
+  DROP TABLE temp_faculty_review;
+  DROP TABLE faculty_schedule;
+
+  RETURN NEW;
+END;
+$$
+LANGUAGE 'plpgsql';
+
+CREATE TRIGGER check_review_conflicts_before_insert
+  BEFORE INSERT
+  ON review_session
+  FOR EACH ROW
+EXECUTE PROCEDURE check_review_conflicts();
+
 -- function refresh a materialized view at insertion
 CREATE OR REPLACE FUNCTION refresh_mat_view()
   RETURNS TRIGGER LANGUAGE plpgsql

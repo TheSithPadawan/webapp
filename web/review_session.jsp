@@ -99,14 +99,16 @@
                 let startTime = startArr[0];
                 let endTime = endArr[0];
 
-                let currentStr = $.param({
+                let currentObj = {
                     'sectionID': sectionID,
                     'date_of': date,
                     'time_start': startTime,
                     'time_end': endTime,
                     'building': building,
                     'room': room
-                });
+                };
+
+                let currentStr = $.param(currentObj);
 
                 fetch('/review', {
                     method: 'POST',
@@ -117,6 +119,26 @@
                     body: currentStr
                 })
                 .then((response) => {
+                    if (response.ok && response.status === 200) {
+                        alert('Success.');
+                        location.reload();
+                        return;
+                    } else {
+                        return response.text();
+                    }
+                })
+                .then((text) => {
+                    if (text === undefined) {
+                        return;
+                    }
+
+                    let msg = 'Error inserting review:\n\n' + text;
+                    console.error(msg);
+                    alert(msg);
+                })
+                .catch((err) => {
+                    alert(err);
+                    console.error(err);
                     location.reload();
                 });
             }

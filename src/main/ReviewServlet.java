@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.io.PrintWriter;
 
 @WebServlet("/review")
 public class ReviewServlet extends HttpServlet {
@@ -38,7 +39,15 @@ public class ReviewServlet extends HttpServlet {
 
         boolean resultHas = dbConn.executePreparedStatement(stmtHas);
         if (!resultHas) {
-            System.out.println("has weekly statement failed");
+            System.out.println("review statement failed");
+            String exception = dbConn.getException();
+
+            response.setStatus(400);
+            response.setHeader("Content-Type", "text/plain");
+            PrintWriter writer = response.getWriter();
+            writer.write(exception);
+            writer.flush();
+
             dbConn.closeConnections();
             return;
         }
