@@ -39,6 +39,7 @@
 <div id="materialized_view" class="collapse">
     <ul>
         <li><a href="materialized_view1.jsp">Grade Breakdown By Quarter</a></li>
+        <li><a href="materialized_view_cpg.jsp">CPG</a></li>
     </ul>
 </div>
 <br><br>

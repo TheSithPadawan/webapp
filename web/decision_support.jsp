@@ -51,7 +51,7 @@
         if (courseID != null) {
             dbConnProf = new DBConn();
             dbConnProf.openConnection();
-            String queryProf = String.format("SELECT * FROM faculty_taught WHERE courseID='%s'", courseID);
+            String queryProf = String.format("SELECT DISTINCT faculty_name FROM faculty_taught WHERE courseID='%s'", courseID);
             dbConnProf.executeQuery(queryProf);
             rsProf = dbConnProf.getResultSet();
         }

@@ -301,3 +301,17 @@ CREATE MATERIALIZED VIEW grade_aggregate AS
         COUNT(*) FILTER (WHERE NOT grade = ANY ('{A+,A,A-,B+,B,B-,C+,C,C-,D}')) AS other
     FROM has_taken INNER JOIN taught_by on has_taken.sectionid = taught_by.sectionid
     GROUP BY has_taken.courseid, taught_by.faculty_name, has_taken.quarter, has_taken.year;
+
+CREATE MATERIALIZED VIEW CPG AS
+    SELECT has_taken.courseID, taught_by.faculty_name,
+        COUNT(*) FILTER (WHERE has_taken.grade = ANY ('{A+,A,A-}')) AS A,
+        COUNT(*) FILTER (WHERE has_taken.grade = ANY ('{B+,B,B-}')) AS B,
+        COUNT(*) FILTER (WHERE has_taken.grade = ANY ('{C+,C,C-}')) AS C,
+        COUNT(*) FILTER (WHERE has_taken.grade = 'D') AS D,
+        COUNT(*) FILTER (WHERE NOT has_taken.grade = ANY ('{A+,A,A-,B+,B,B-,C+,C,C-,D}')) AS other
+    FROM faculty_taught
+    JOIN has_taken
+        ON faculty_taught.courseID = has_taken.courseID AND faculty_taught.quarter = has_taken.quarter AND faculty_taught.year = has_taken.year
+    JOIN taught_by
+        ON has_taken.sectionID = taught_by.sectionID AND taught_by.faculty_name = faculty_taught.faculty_name
+    GROUP BY has_taken.courseID, taught_by.faculty_name;

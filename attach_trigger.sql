@@ -197,3 +197,20 @@ CREATE TRIGGER update_mat_vew
   ON has_taken
   FOR EACH ROW
 EXECUTE PROCEDURE refresh_mat_view();
+
+
+CREATE OR REPLACE FUNCTION refresh_cpg_view()
+  RETURNS TRIGGER LANGUAGE plpgsql
+  AS $$
+  BEGIN
+    refresh materialized view cpg;
+    RETURN NULL;
+  END;
+  $$;
+
+CREATE TRIGGER trigger_update_cpg
+  AFTER INSERT OR DELETE OR UPDATE
+  ON has_taken
+  FOR EACH ROW
+EXECUTE PROCEDURE refresh_cpg_view();
+

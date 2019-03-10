@@ -48,6 +48,7 @@ public class DecisionSupportServlet extends HttpServlet {
         String query = null;
         if (metric.equals("Letter")) {
             if (professor != null && quarter != null && year != null) {
+                System.out.println("prof qtr year");
                 String formatQuery =
                     "SELECT faculty_taught.courseID, " +
                     "    COUNT(*) FILTER (WHERE has_taken.grade = ANY ('{A+,A,A-}')) AS A, " +
@@ -58,10 +59,13 @@ public class DecisionSupportServlet extends HttpServlet {
                     "FROM faculty_taught " +
                     "JOIN has_taken " +
                     "    ON faculty_taught.courseID = has_taken.courseID AND faculty_taught.quarter = has_taken.quarter AND faculty_taught.year = has_taken.year " +
+                    "JOIN taught_by " +
+                    "    ON has_taken.sectionID = taught_by.sectionID AND taught_by.faculty_name = faculty_taught.faculty_name " +
                     "WHERE faculty_taught.faculty_name = '%s' AND faculty_taught.courseID = '%s' AND faculty_taught.quarter = '%s'::quarter_enum AND faculty_taught.year = %d" +
                     "GROUP BY faculty_taught.courseID";
                 query = String.format(formatQuery, professor, courseID, quarter, year);
             } else if (professor != null) {
+                System.out.println("prof");
                 String formatQuery =
                     "SELECT faculty_taught.courseID, " +
                     "    COUNT(*) FILTER (WHERE has_taken.grade = ANY ('{A+,A,A-}')) AS A, " +
@@ -71,11 +75,14 @@ public class DecisionSupportServlet extends HttpServlet {
                     "    COUNT(*) FILTER (WHERE NOT has_taken.grade = ANY ('{A+,A,A-,B+,B,B-,C+,C,C-,D}')) AS other " +
                     "FROM faculty_taught " +
                     "JOIN has_taken " +
-                    "    ON faculty_taught.courseID = has_taken.courseID " +
+                    "    ON faculty_taught.courseID = has_taken.courseID AND faculty_taught.quarter = has_taken.quarter AND faculty_taught.year = has_taken.year " +
+                    "JOIN taught_by " +
+                    "    ON has_taken.sectionID = taught_by.sectionID AND taught_by.faculty_name = faculty_taught.faculty_name " +
                     "WHERE faculty_taught.faculty_name = '%s' AND faculty_taught.courseID = '%s' " +
                     "GROUP BY faculty_taught.courseID";
                 query = String.format(formatQuery, professor, courseID);
             } else {
+                System.out.println("course");
                 String formatQuery =
                     "SELECT has_taken.courseID, " +
                     "    COUNT(*) FILTER (WHERE has_taken.grade = ANY ('{A+,A,A-}')) AS A, " +
@@ -89,11 +96,14 @@ public class DecisionSupportServlet extends HttpServlet {
                 query = String.format(formatQuery, courseID);
             }
         } else if (metric.equals("GPA")) {
+            System.out.println("gpa");
             String formatQuery =
                 "SELECT faculty_taught.courseID, AVG(grade_conversion.number_grade) AS avg_gpa " +
                 "FROM faculty_taught " +
                 "JOIN has_taken " +
-                "    ON faculty_taught.courseID = has_taken.courseID " +
+                "    ON faculty_taught.courseID = has_taken.courseID AND faculty_taught.quarter = has_taken.quarter AND faculty_taught.year = has_taken.year " +
+                "JOIN taught_by " +
+                "    ON has_taken.sectionID = taught_by.sectionID AND taught_by.faculty_name = faculty_taught.faculty_name " +
                 "JOIN grade_conversion " +
                 "    ON has_taken.grade = grade_conversion.letter_grade " +
                 "WHERE faculty_taught.faculty_name = '%s' AND faculty_taught.courseID = '%s' " +
