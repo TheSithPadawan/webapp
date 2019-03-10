@@ -12,6 +12,7 @@ public class DBConn{
     private final String connectionUrl;
     private final String user = "admin";
     private final String password = "winter2019";
+    private String exception;
     public Connection conn;
     public Statement stmt;
     public ResultSet rs;
@@ -33,6 +34,7 @@ public class DBConn{
         // Handle any errors that may have occurred.
         catch (Exception e) {
             System.out.println(e.getMessage());
+            exception = e.getMessage();
             e.printStackTrace();
             if(DEBUG) System.out.println("Connection to DB failed.");
         }
@@ -45,6 +47,7 @@ public class DBConn{
             if( null != this.conn ) this.conn.close();
             if(DEBUG) System.out.println("Connection to DB closed.");
         } catch (SQLException e) {
+            exception = e.getMessage();
             e.printStackTrace();
         }
     }
@@ -53,6 +56,7 @@ public class DBConn{
         try {
             this.rs = this.stmt.executeQuery(query);
         } catch (SQLException e) {
+            exception = e.getMessage();
             e.printStackTrace();
             if(DEBUG){ System.out.println("Query failed to execute:");
                 System.out.println(query);
@@ -67,6 +71,7 @@ public class DBConn{
             return pstmt;
 
         } catch (SQLException e) {
+            exception = e.getMessage();
             e.printStackTrace();
             if(DEBUG) System.out.println("Failed to create PreparedStatement.");
         }
@@ -82,6 +87,7 @@ public class DBConn{
             return pstmt;
 
         } catch (SQLException e) {
+            exception = e.getMessage();
             e.printStackTrace();
             if(DEBUG) System.out.println("Failed to create PreparedStatement.");
         }
@@ -98,6 +104,7 @@ public class DBConn{
             return success;
         }
         catch (SQLException e) {
+            exception = e.getMessage();
             System.out.println(e.getMessage());
             if(DEBUG){ System.out.println("Failed to execute prepared statement");
                 System.out.println(pstmt.toString());
@@ -114,9 +121,14 @@ public class DBConn{
         try {
             return this.conn.createStatement();
         } catch (SQLException e) {
+            exception = e.getMessage();
             e.printStackTrace();
         }
         return null;
+    }
+
+    public String getException() {
+        return this.exception;
     }
 
     /*

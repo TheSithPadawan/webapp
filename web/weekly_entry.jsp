@@ -105,7 +105,7 @@
                     let startTime = startArr[0];
                     let endTime = endArr[0];
 
-                    let currentStr = $.param({
+                    let currentObj = {
                         'sectionID': sectionID,
                         'day': day,
                         'time_start': startTime,
@@ -114,9 +114,10 @@
                         'room': room,
                         'type_meeting': type,
                         'required_meeting': (required ? 'true' : 'false')
-                    });
-                    console.log(currentStr);
-                    weeklyArr.push(currentStr);
+                    };
+
+                    console.log(currentObj);
+                    weeklyArr.push(currentObj);
                 }
 
                 if (weeklyArr.length === 0) {
@@ -124,17 +125,41 @@
                     return;
                 }
 
+                let errorResults = 'Error(s) encountered:';
+                let successResults = '\n\nSuccessfully inserted:';
                 for (let weekly of weeklyArr) {
-                    await fetch('/weekly', {
-                        method: 'POST',
-                        headers: {
-                          'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        redirect: 'manual',
-                        body: weekly
-                    });
+                    try {
+                        let bodyStr = $.param(weekly);
+
+                        let response = await fetch('/weekly', {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            redirect: 'manual',
+                            body: bodyStr
+                        });
+
+                        if (!response.ok) {
+                            let body = await response.text();
+                            throw body;
+                        }
+
+                    } catch (err) {
+                        let errMsg = '\n\n- ' + weekly['type_meeting'] + ' ' + weekly['day'] + ' ' + weekly['time_start'] + ' - ' + weekly['time_end'] + ': ' + err;
+                        console.error(errMsg);
+                        errorResults += errMsg;
+                        continue;
+                    }
+
+                    successResults += '\n\n- ' + weekly['type_meeting'] + ' ' + weekly['day'] + ' ' + weekly['time_start'] + ' - ' + weekly['time_end'];
                 }
 
+                if (errorResults === 'Error(s) encountered:') {
+                    errorResults = '';
+                };
+
+                alert(errorResults + successResults);
                 location.reload();
             }
         </script>

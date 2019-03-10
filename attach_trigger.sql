@@ -82,20 +82,40 @@ CREATE OR REPLACE FUNCTION check_faculty_schedule()
 $$
 BEGIN
   -- precompute faculty schedule
+  CREATE TABLE temp_faculty_section AS
+    SELECT *
+    FROM taught_by
+    WHERE sectionid = NEW.sectionid;
+
   CREATE TABLE faculty_schedule AS
-    SELECT taught_by.sectionid, has_weekly_meetings.day, has_weekly_meetings.time_start, has_weekly_meetings.time_end,
+    SELECT has_weekly_meetings.sectionid,
+      has_weekly_meetings.day,
+      has_weekly_meetings.time_start,
+      has_weekly_meetings.time_end,
       taught_by.faculty_name
-    FROM has_weekly_meetings INNER JOIN taught_by ON taught_by.sectionid = has_weekly_meetings.sectionid
-    WHERE faculty_name = NEW.faculty_name;
-  IF EXISTS(SELECT * FROM faculty_schedule WHERE faculty_schedule.day = NEW.day AND faculty_schedule.time_start < NEW.time_end AND
-    faculty_schedule.time_end > NEW.time_start) THEN
+    FROM has_weekly_meetings
+    JOIN taught_by
+      ON taught_by.sectionid = has_weekly_meetings.sectionid
+    JOIN temp_faculty_section
+      ON temp_faculty_section.faculty_name = taught_by.faculty_name;
+
+  IF EXISTS (
+    SELECT *
+    FROM faculty_schedule
+    WHERE faculty_schedule.day = NEW.day
+      AND faculty_schedule.time_start < NEW.time_end
+      AND faculty_schedule.time_end > NEW.time_start) THEN
     BEGIN
-      RAISE EXCEPTION 'Time conflict for the following section %,  %', New.sectionid, faculty_schedule.sectionid;
+      RAISE EXCEPTION 'Time conflict for section';
+        DROP TABLE temp_faculty_section;
       DROP TABLE faculty_schedule;
       RETURN NULL;
     END;
   END IF;
+
+  DROP TABLE temp_faculty_section;
   DROP TABLE faculty_schedule;
+
   RETURN NEW;
 END;
 $$
@@ -103,7 +123,7 @@ LANGUAGE 'plpgsql';
 
 CREATE TRIGGER check_faculty_schedule_before_insert
   BEFORE INSERT
-  ON faculty_taught
+  ON has_weekly_meetings
   FOR EACH ROW
 EXECUTE PROCEDURE check_faculty_schedule();
 
