@@ -63,5 +63,11 @@
             rs.close();
             dbConn.closeConnections();
         %>
+
+        <script>
+            setInterval(() => {
+                location.reload();
+            }, 1000);
+        </script>
     </body>
 </html>
