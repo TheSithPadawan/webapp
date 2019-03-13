@@ -292,7 +292,7 @@ INSERT INTO grade_conversion values('C-', 1.9);
 INSERT INTO grade_conversion values('D', 1.6);
 
 -- part 5 materialized view
-CREATE MATERIALIZED VIEW grade_aggregate AS
+CREATE TABLE grade_aggregate AS
     SELECT has_taken.courseid, taught_by.faculty_name, has_taken.quarter, has_taken.year,
         COUNT(*) FILTER (WHERE grade = ANY ('{A+,A,A-}')) AS A,
         COUNT(*) FILTER (WHERE grade = ANY ('{B+,B,B-}')) AS B,

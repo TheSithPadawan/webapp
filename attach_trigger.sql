@@ -185,19 +185,47 @@ EXECUTE PROCEDURE check_review_conflicts();
 CREATE OR REPLACE FUNCTION refresh_mat_view()
   RETURNS TRIGGER LANGUAGE plpgsql
   AS $$
+  DECLARE prev_grade VARCHAR;
   BEGIN
-    refresh materialized view grade_aggregate;
-    RETURN NULL;
-  END;
+    -- refresh materialized view grade_aggregate;
+    IF EXISTS (SELECT * FROM has_taken WHERE studentid = NEW.studentid AND sectionid = NEW.sectionid) THEN
+      -- this is an update
+        SELECT grade INTO prev_grade FROM has_taken WHERE studentid = NEW.studentid AND sectionid = NEW.sectionid;
+        IF prev_grade IN ('A+', 'A', 'A-') THEN
+          UPDATE grade_aggregate SET A = A - 1;
+        ELSEIF prev_grade IN ('B+', 'B', 'B-') THEN
+          UPDATE grade_aggregate SET B = B - 1;
+        ELSEIF prev_grade IN ('C+', 'C', 'C-') THEN
+          UPDATE grade_aggregate SET C = C - 1;
+        ELSEIF prev_grade IN ('D+', 'D', 'D-') THEN
+          UPDATE grade_aggregate SET D = D - 1;
+        ELSE
+          UPDATE grade_aggregate SET other = other - 1;
+        END IF;
+    END IF;
+    -- insert the new grade
+    IF NEW.grade IN ('A+', 'A', 'A-') THEN
+        UPDATE grade_aggregate SET A = A + 1;
+        raise notice 'Value: %', NEW.grade;
+    ELSEIF NEW.grade IN ('B+', 'B', 'B-') THEN
+        UPDATE grade_aggregate SET B = B + 1;
+    ELSEIF NEW.grade IN ('C+', 'C', 'C-') THEN
+        UPDATE grade_aggregate SET C = C + 1;
+    ELSEIF NEW.grade IN ('D+', 'D', 'D-') THEN
+        UPDATE grade_aggregate SET D = D + 1;
+    ELSE
+        UPDATE grade_aggregate SET other = other + 1;
+    END IF;
+      RETURN NEW;
+    END;
   $$;
 
 -- trigger binds to has_taken table
 CREATE TRIGGER update_mat_vew
-  AFTER INSERT OR DELETE OR UPDATE
+  BEFORE INSERT OR UPDATE
   ON has_taken
   FOR EACH ROW
 EXECUTE PROCEDURE refresh_mat_view();
-
 
 CREATE OR REPLACE FUNCTION refresh_cpg_view()
   RETURNS TRIGGER LANGUAGE plpgsql
