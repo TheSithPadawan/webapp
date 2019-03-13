@@ -302,7 +302,7 @@ CREATE MATERIALIZED VIEW grade_aggregate AS
     FROM has_taken INNER JOIN taught_by on has_taken.sectionid = taught_by.sectionid
     GROUP BY has_taken.courseid, taught_by.faculty_name, has_taken.quarter, has_taken.year;
 
-CREATE MATERIALIZED VIEW CPG AS
+CREATE TABLE IF NOT EXISTS CPG AS
     SELECT has_taken.courseID, taught_by.faculty_name,
         COUNT(*) FILTER (WHERE has_taken.grade = ANY ('{A+,A,A-}')) AS A,
         COUNT(*) FILTER (WHERE has_taken.grade = ANY ('{B+,B,B-}')) AS B,

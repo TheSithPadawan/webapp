@@ -198,18 +198,75 @@ CREATE TRIGGER update_mat_vew
   FOR EACH ROW
 EXECUTE PROCEDURE refresh_mat_view();
 
-
 CREATE OR REPLACE FUNCTION refresh_cpg_view()
   RETURNS TRIGGER LANGUAGE plpgsql
   AS $$
+  DECLARE
+    new_faculty TEXT;
+    new_A INT;
+    new_B INT;
+    new_C INT;
+    new_D INT;
+    new_other INT;
   BEGIN
-    refresh materialized view cpg;
+    CREATE TABLE tmp_cpg AS
+      SELECT NEW.courseID, taught_by.faculty_name,
+          COUNT(*) FILTER (WHERE NEW.grade = ANY ('{A+,A,A-}')) AS A,
+          COUNT(*) FILTER (WHERE NEW.grade = ANY ('{B+,B,B-}')) AS B,
+          COUNT(*) FILTER (WHERE NEW.grade = ANY ('{C+,C,C-}')) AS C,
+          COUNT(*) FILTER (WHERE NEW.grade = 'D') AS D,
+          COUNT(*) FILTER (WHERE NOT NEW.grade = ANY ('{A+,A,A-,B+,B,B-,C+,C,C-,D}')) AS other
+      FROM faculty_taught
+      JOIN taught_by
+          ON NEW.sectionID = taught_by.sectionID AND taught_by.faculty_name = faculty_taught.faculty_name
+      WHERE faculty_taught.courseID = NEW.courseID AND faculty_taught.quarter = NEW.quarter AND faculty_taught.year = NEW.year
+      GROUP BY NEW.courseID, taught_by.faculty_name;
+
+    SELECT tmp_cpg.faculty_name INTO STRICT new_faculty FROM tmp_cpg WHERE tmp_cpg.courseID = NEW.courseID LIMIT 1;
+    SELECT tmp_cpg.A INTO STRICT new_A FROM tmp_cpg WHERE tmp_cpg.courseID = NEW.courseID LIMIT 1;
+    SELECT tmp_cpg.B INTO STRICT new_B FROM tmp_cpg WHERE tmp_cpg.courseID = NEW.courseID LIMIT 1;
+    SELECT tmp_cpg.C INTO STRICT new_C FROM tmp_cpg WHERE tmp_cpg.courseID = NEW.courseID LIMIT 1;
+    SELECT tmp_cpg.D INTO STRICT new_D FROM tmp_cpg WHERE tmp_cpg.courseID = NEW.courseID LIMIT 1;
+    SELECT tmp_cpg.other INTO STRICT new_other FROM tmp_cpg WHERE tmp_cpg.courseID = NEW.courseID LIMIT 1;
+
+    IF EXISTS (SELECT 1 FROM CPG WHERE courseID = NEW.courseID AND faculty_name = new_faculty) THEN
+        IF (new_A > 0) THEN
+            EXECUTE '
+            UPDATE CPG
+                SET A = A + 1
+            WHERE courseID =' || quote_literal(NEW.courseID) || ' AND faculty_name = ' || quote_literal(new_faculty);
+        ELSIF (new_B > 0) THEN
+            EXECUTE '
+            UPDATE CPG
+                SET B = B + 1
+            WHERE courseID =' || quote_literal(NEW.courseID) || ' AND faculty_name = ' || quote_literal(new_faculty);
+        ELSIF (new_C > 0) THEN
+            EXECUTE '
+            UPDATE CPG
+                SET C = C + 1
+            WHERE courseID =' || quote_literal(NEW.courseID) || ' AND faculty_name = ' || quote_literal(new_faculty);
+        ELSIF (new_D > 0) THEN
+            EXECUTE '
+            UPDATE CPG
+                SET D = D + 1
+            WHERE courseID =' || quote_literal(NEW.courseID) || ' AND faculty_name = ' || quote_literal(new_faculty);
+        ELSIF (new_other > 0) THEN
+            EXECUTE '
+            UPDATE CPG
+                SET other = other + 1
+            WHERE courseID =' || quote_literal(NEW.courseID) || ' AND faculty_name = ' || quote_literal(new_faculty);
+        END IF;
+    ELSE
+      INSERT INTO CPG (SELECT * FROM tmp_cpg);
+    END IF;
+
+    DROP TABLE tmp_cpg;
     RETURN NULL;
   END;
   $$;
 
 CREATE TRIGGER trigger_update_cpg
-  AFTER INSERT OR DELETE OR UPDATE
+  AFTER INSERT OR UPDATE
   ON has_taken
   FOR EACH ROW
 EXECUTE PROCEDURE refresh_cpg_view();
