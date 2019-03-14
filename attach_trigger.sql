@@ -87,7 +87,7 @@ BEGIN
     FROM taught_by
     WHERE sectionid = NEW.sectionid;
 
-  CREATE TABLE faculty_schedule AS
+  CREATE TABLE temp_faculty_schedule AS
     SELECT has_weekly_meetings.sectionid,
       has_weekly_meetings.day,
       has_weekly_meetings.time_start,
@@ -101,20 +101,20 @@ BEGIN
 
   IF EXISTS (
     SELECT *
-    FROM faculty_schedule
-    WHERE faculty_schedule.day = NEW.day
-      AND faculty_schedule.time_start < NEW.time_end
-      AND faculty_schedule.time_end > NEW.time_start) THEN
+    FROM temp_faculty_schedule
+    WHERE temp_faculty_schedule.day = NEW.day
+      AND temp_faculty_schedule.time_start < NEW.time_end
+      AND temp_faculty_schedule.time_end > NEW.time_start) THEN
     BEGIN
       RAISE EXCEPTION 'Time conflict for section';
         DROP TABLE temp_faculty_section;
-      DROP TABLE faculty_schedule;
+      DROP TABLE temp_faculty_schedule;
       RETURN NULL;
     END;
   END IF;
 
   DROP TABLE temp_faculty_section;
-  DROP TABLE faculty_schedule;
+  DROP TABLE temp_faculty_schedule;
 
   RETURN NEW;
 END;
