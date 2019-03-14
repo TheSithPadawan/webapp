@@ -69,7 +69,7 @@
             let intervalId = undefined;
 
             $(document).ready(function() {
-                let autoRefresh = localStorage.getItem('autoRefresh') === 'true';
+                let autoRefresh = localStorage.getItem('autoRefresh') === 'true' || localStorage.getItem('autoRefresh') === true;
                 if (autoRefresh === null || autoRefresh === undefined || typeof autoRefresh !== 'boolean') {
                     autoRefresh = false;
                     localStorage.setItem('autoRefresh', false);
