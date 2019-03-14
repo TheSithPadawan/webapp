@@ -185,38 +185,101 @@ EXECUTE PROCEDURE check_review_conflicts();
 CREATE OR REPLACE FUNCTION refresh_mat_view()
   RETURNS TRIGGER LANGUAGE plpgsql
   AS $$
-  DECLARE prev_grade VARCHAR;
+  DECLARE courseid VARCHAR;
+          faculty VARCHAR;
+          quarter quarter_enum;
+          year    int;
   BEGIN
-    -- refresh materialized view grade_aggregate;
-    IF EXISTS (SELECT * FROM has_taken WHERE studentid = NEW.studentid AND sectionid = NEW.sectionid) THEN
-      -- this is an update
-        SELECT grade INTO prev_grade FROM has_taken WHERE studentid = NEW.studentid AND sectionid = NEW.sectionid;
-        IF prev_grade IN ('A+', 'A', 'A-') THEN
-          UPDATE grade_aggregate SET A = A - 1;
-        ELSEIF prev_grade IN ('B+', 'B', 'B-') THEN
-          UPDATE grade_aggregate SET B = B - 1;
-        ELSEIF prev_grade IN ('C+', 'C', 'C-') THEN
-          UPDATE grade_aggregate SET C = C - 1;
-        ELSEIF prev_grade IN ('D+', 'D', 'D-') THEN
-          UPDATE grade_aggregate SET D = D - 1;
-        ELSE
-          UPDATE grade_aggregate SET other = other - 1;
-        END IF;
-    END IF;
-    -- insert the new grade
-    IF NEW.grade IN ('A+', 'A', 'A-') THEN
-        UPDATE grade_aggregate SET A = A + 1;
-        raise notice 'Value: %', NEW.grade;
-    ELSEIF NEW.grade IN ('B+', 'B', 'B-') THEN
-        UPDATE grade_aggregate SET B = B + 1;
-    ELSEIF NEW.grade IN ('C+', 'C', 'C-') THEN
-        UPDATE grade_aggregate SET C = C + 1;
-    ELSEIF NEW.grade IN ('D+', 'D', 'D-') THEN
-        UPDATE grade_aggregate SET D = D + 1;
+    -- compute delta
+    CREATE TABLE tmp_cpqg AS
+      SELECT NEW.courseid, taught_by.faculty_name, NEW.quarter, NEW.year,
+        COUNT(*) FILTER (WHERE NEW.grade = ANY ('{A+,A,A-}')) AS A,
+        COUNT(*) FILTER (WHERE NEW.grade = ANY ('{B+,B,B-}')) AS B,
+        COUNT(*) FILTER (WHERE NEW.grade = ANY ('{C+,C,C-}')) AS C,
+        COUNT(*) FILTER (WHERE NEW.grade = 'D') AS D,
+        COUNT(*) FILTER (WHERE NOT NEW.grade = ANY ('{A+,A,A-,B+,B,B-,C+,C,C-,D}')) AS other
+      FROM taught_by WHERE NEW.sectionid = taught_by.sectionid
+      GROUP BY NEW.courseid, taught_by.faculty_name, NEW.quarter, NEW.year;
+
+    -- for each delta perform update
+    -- the following code performs the update
+    IF EXISTS (SELECT * FROM grade_aggregate, tmp_cpqg WHERE tmp_cpqg.courseid = grade_aggregate.courseid
+    AND tmp_cpqg.faculty_name = grade_aggregate.faculty_name AND tmp_cpqg.quarter = grade_aggregate.quarter
+    AND tmp_cpqg.year = grade_aggregate.year) THEN
+      -- either grade update or new student records
+      IF NEW.grade IN ('A+', 'A', 'A-') THEN
+        UPDATE grade_aggregate
+        SET A = tmp_cpqg.A
+        FROM tmp_cpqg
+        WHERE tmp_cpqg.courseid = grade_aggregate.courseid
+              AND tmp_cpqg.faculty_name = grade_aggregate.faculty_name AND tmp_cpqg.quarter = grade_aggregate.quarter
+              AND tmp_cpqg.year = grade_aggregate.year;
+      ELSEIF NEW.grade IN ('B+', 'B', 'B-') THEN
+        UPDATE grade_aggregate
+        SET B = tmp_cpqg.B
+        FROM tmp_cpqg
+        WHERE tmp_cpqg.courseid = grade_aggregate.courseid
+              AND tmp_cpqg.faculty_name = grade_aggregate.faculty_name AND tmp_cpqg.quarter = grade_aggregate.quarter
+              AND tmp_cpqg.year = grade_aggregate.year;
+      ELSEIF NEW.grade IN ('C+', 'C', 'C-') THEN
+        UPDATE grade_aggregate
+        SET C = tmp_cpqg.C
+        FROM tmp_cpqg
+        WHERE tmp_cpqg.courseid = grade_aggregate.courseid
+              AND tmp_cpqg.faculty_name = grade_aggregate.faculty_name AND tmp_cpqg.quarter = grade_aggregate.quarter
+              AND tmp_cpqg.year = grade_aggregate.year;
+      ELSEIF NEW.grade IN ('D+', 'D', 'D-') THEN
+        UPDATE grade_aggregate
+        SET D = tmp_cpqg.D
+        FROM tmp_cpqg
+        WHERE tmp_cpqg.courseid = grade_aggregate.courseid
+              AND tmp_cpqg.faculty_name = grade_aggregate.faculty_name AND tmp_cpqg.quarter = grade_aggregate.quarter
+              AND tmp_cpqg.year = grade_aggregate.year;
+      ELSE
+        UPDATE grade_aggregate
+        SET other = tmp_cpqg.other
+        FROM tmp_cpqg
+        WHERE tmp_cpqg.courseid = grade_aggregate.courseid
+              AND tmp_cpqg.faculty_name = grade_aggregate.faculty_name AND tmp_cpqg.quarter = grade_aggregate.quarter
+              AND tmp_cpqg.year = grade_aggregate.year;
+      END IF;
     ELSE
-        UPDATE grade_aggregate SET other = other + 1;
+      -- it's a new row for a new course
+      INSERT INTO grade_aggregate SELECT * FROM tmp_cpqg;
     END IF;
-      RETURN NEW;
+
+    -- if it's an update need to change the old record also
+    IF tg_op = 'UPDATE' THEN
+      SELECT faculty_name INTO faculty FROM tmp_cpqg WHERE OLD.courseid = tmp_cpqg.courseid;
+      IF OLD.grade IN ('A+', 'A', 'A-') THEN
+        UPDATE grade_aggregate
+        SET A = grade_aggregate.A - 1
+        WHERE OLD.courseid =grade_aggregate.courseid AND old.quarter = grade_aggregate.quarter
+        AND old.year = grade_aggregate.year AND grade_aggregate.faculty_name = faculty;
+      ELSEIF NEW.grade IN ('B+', 'B', 'B-') THEN
+        UPDATE grade_aggregate
+        SET B = grade_aggregate.B - 1
+        WHERE OLD.courseid =grade_aggregate.courseid AND old.quarter = grade_aggregate.quarter
+              AND old.year = grade_aggregate.year AND grade_aggregate.faculty_name = faculty;
+      ELSEIF NEW.grade IN ('C+', 'C', 'C-') THEN
+        UPDATE grade_aggregate
+        SET C = grade_aggregate.C - 1
+        WHERE OLD.courseid =grade_aggregate.courseid AND old.quarter = grade_aggregate.quarter
+              AND old.year = grade_aggregate.year AND grade_aggregate.faculty_name = faculty;
+      ELSEIF NEW.grade IN ('D+', 'D', 'D-') THEN
+        UPDATE grade_aggregate
+        SET D = grade_aggregate.D - 1
+        WHERE OLD.courseid =grade_aggregate.courseid AND old.quarter = grade_aggregate.quarter
+              AND old.year = grade_aggregate.year AND grade_aggregate.faculty_name = faculty;
+      ELSE
+        UPDATE grade_aggregate
+        SET other = grade_aggregate.other - 1
+        WHERE OLD.courseid =grade_aggregate.courseid AND old.quarter = grade_aggregate.quarter
+              AND old.year = grade_aggregate.year AND grade_aggregate.faculty_name = faculty;
+      END IF;
+    END IF;
+    DROP TABLE tmp_cpqg;
+    RETURN NEW;
     END;
   $$;
 
