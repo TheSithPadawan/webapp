@@ -181,7 +181,6 @@ CREATE TRIGGER check_review_conflicts_before_insert
   FOR EACH ROW
 EXECUTE PROCEDURE check_review_conflicts();
 
--- function refresh a materialized view at insertion
 CREATE OR REPLACE FUNCTION refresh_mat_view()
   RETURNS TRIGGER LANGUAGE plpgsql
   AS $$
@@ -201,7 +200,7 @@ CREATE OR REPLACE FUNCTION refresh_mat_view()
       FROM taught_by WHERE NEW.sectionid = taught_by.sectionid
       GROUP BY NEW.courseid, taught_by.faculty_name, NEW.quarter, NEW.year;
 
-    SELECT faculty_name INTO faculty FROM tmp_cpqg WHERE OLD.courseid = tmp_cpqg.courseid;
+    SELECT faculty_name INTO faculty FROM tmp_cpqg WHERE NEW.courseid = tmp_cpqg.courseid;
 
     -- for each delta perform update
     -- the following code performs the update
@@ -278,7 +277,7 @@ CREATE OR REPLACE FUNCTION refresh_mat_view()
     RETURN NEW;
     END;
   $$;
-  
+
 -- trigger binds to has_taken table
 CREATE TRIGGER update_mat_vew
   BEFORE INSERT OR UPDATE
