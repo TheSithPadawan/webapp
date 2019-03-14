@@ -78,7 +78,7 @@
         event.preventDefault();
         submit();
     });
-    
+
     function submit() {
         let id = "<%=studentID%>";
         let course = "<%=courseID%>";
@@ -104,8 +104,22 @@
             }
         })
             .then((response) => {
-                // response from POST
-                window.location.href="/course_enrollment.jsp";
+                if (!response.ok || response.statusCode !== 200) {
+                    return response.text();
+                } else {
+                    // response from POST
+                    window.location.href="/course_enrollment.jsp";
+                    return undefined;
+                }
+            })
+            .then((text) => {
+                if (text === undefined) {
+                    return;
+                }
+
+                console.error(text);
+
+                alert('Enrollment failed:\n' + text);
             });
     }
 </script>

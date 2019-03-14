@@ -51,8 +51,20 @@ public class SectionEnrollServlet extends HttpServlet {
         } catch (SQLException ex) {
             System.out.println("Failed to insert statement " + query);
             System.out.println(ex.getMessage());
+            dbConn.closeConnections();
+            return;
         }
-        dbConn.executePreparedStatement(stmt);
+        boolean result = dbConn.executePreparedStatement(stmt);
+        if (!result) {
+            String exception = dbConn.getException();
+            response.setStatus(400);
+            response.setHeader("Content-Type", "text/plain");
+            PrintWriter writer = response.getWriter();
+            writer.write(exception);
+            writer.flush();
+            dbConn.closeConnections();
+            return;
+        }
 
         // add to student's load in current quarter
         query = "INSERT INTO is_taking VALUES (?,?,?::quarter_enum,?,?)";

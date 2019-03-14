@@ -45,7 +45,7 @@ BEGIN
   IF (current_num >= enroll_limit) THEN
     -- raise exception here
     BEGIN
-      RAISE EXCEPTION 'Enrollment limit exceeded for section %', NEW.sectionid;
+      RAISE EXCEPTION 'Enrollment limit exceeded for section ';
       -- clean up
       DROP TABLE current_enrollment;
       RETURN NULL;
