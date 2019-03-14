@@ -15,6 +15,15 @@
 
     <body>
         <jsp:include page="menu.jsp"/>
+
+        <div class="form-check">
+            <input id="check_autorefresh" type="checkbox" class="form-check-input">
+            <label class="form-check-label" for="check_autorefresh">
+                Auto refresh
+            </label>
+        </div>
+        <br>
+
         <table class="table table-hover">
             <thead>
             <tr>
@@ -56,9 +65,39 @@
         %>
 
         <script>
-            setInterval(() => {
-                location.reload();
-            }, 3000);
+            const checkAutoRefresh = document.getElementById('check_autorefresh');
+            let intervalId = undefined;
+
+            $(document).ready(function() {
+                let autoRefresh = localStorage.getItem('autoRefresh') === 'true' || localStorage.getItem('autoRefresh') === true;
+                if (autoRefresh === null || autoRefresh === undefined || typeof autoRefresh !== 'boolean') {
+                    autoRefresh = false;
+                    localStorage.setItem('autoRefresh', false);
+                }
+
+                console.log('ready auto refresh: ', autoRefresh);
+                if (autoRefresh) {
+                    intervalId = setInterval(() => {
+                        location.reload();
+                    }, 2000);
+                }
+
+                checkAutoRefresh.checked = autoRefresh;
+
+                checkAutoRefresh.addEventListener('change', (event) => {
+                    console.log('event listener auto refresh: ', event.target.checked);
+                    localStorage.setItem('autoRefresh', event.target.checked);
+                    if (event.target.checked) {
+                        intervalId = setInterval(() => {
+                            console.log('refreshing');
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        clearInterval(intervalId);
+                        intervalId = undefined;
+                    }
+                });
+            });
         </script>
     </body>
 </html>

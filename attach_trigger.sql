@@ -324,7 +324,6 @@ CREATE OR REPLACE FUNCTION refresh_cpg_view()
     SELECT tmp_cpg.other INTO STRICT new_other FROM tmp_cpg WHERE tmp_cpg.courseID = NEW.courseID;
 
     IF OLD IS NOT NULL THEN
-      RAISE NOTICE 'update grade cpg';
       -- this is an update
         IF OLD.grade IN ('A+', 'A', 'A-') THEN
           EXECUTE '
@@ -355,7 +354,6 @@ CREATE OR REPLACE FUNCTION refresh_cpg_view()
     END IF;
 
     IF EXISTS (SELECT 1 FROM CPG WHERE courseID = NEW.courseID AND faculty_name = new_faculty) THEN
-      RAISE NOTICE 'increment grade cpg';
       -- add grade
       IF (new_A > 0) THEN
           EXECUTE '
@@ -385,7 +383,6 @@ CREATE OR REPLACE FUNCTION refresh_cpg_view()
       END IF;
     ELSE
       -- new row
-      RAISE NOTICE 'new row cpg';
       INSERT INTO CPG (SELECT * FROM tmp_cpg);
     END IF;
 
