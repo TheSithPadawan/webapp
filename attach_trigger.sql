@@ -238,6 +238,7 @@ CREATE OR REPLACE FUNCTION refresh_cpg_view()
     new_D INT;
     new_other INT;
   BEGIN
+    -- compute new row
     CREATE TABLE tmp_cpg AS
       SELECT NEW.courseID, taught_by.faculty_name,
           COUNT(*) FILTER (WHERE NEW.grade = ANY ('{A+,A,A-}')) AS A,
@@ -251,41 +252,77 @@ CREATE OR REPLACE FUNCTION refresh_cpg_view()
       WHERE faculty_taught.courseID = NEW.courseID AND faculty_taught.quarter = NEW.quarter AND faculty_taught.year = NEW.year
       GROUP BY NEW.courseID, taught_by.faculty_name;
 
-    SELECT tmp_cpg.faculty_name INTO STRICT new_faculty FROM tmp_cpg WHERE tmp_cpg.courseID = NEW.courseID LIMIT 1;
-    SELECT tmp_cpg.A INTO STRICT new_A FROM tmp_cpg WHERE tmp_cpg.courseID = NEW.courseID LIMIT 1;
-    SELECT tmp_cpg.B INTO STRICT new_B FROM tmp_cpg WHERE tmp_cpg.courseID = NEW.courseID LIMIT 1;
-    SELECT tmp_cpg.C INTO STRICT new_C FROM tmp_cpg WHERE tmp_cpg.courseID = NEW.courseID LIMIT 1;
-    SELECT tmp_cpg.D INTO STRICT new_D FROM tmp_cpg WHERE tmp_cpg.courseID = NEW.courseID LIMIT 1;
-    SELECT tmp_cpg.other INTO STRICT new_other FROM tmp_cpg WHERE tmp_cpg.courseID = NEW.courseID LIMIT 1;
+    -- pull new faculty and grade
+    SELECT tmp_cpg.faculty_name INTO STRICT new_faculty FROM tmp_cpg WHERE tmp_cpg.courseID = NEW.courseID;
+    SELECT tmp_cpg.A INTO STRICT new_A FROM tmp_cpg WHERE tmp_cpg.courseID = NEW.courseID;
+    SELECT tmp_cpg.B INTO STRICT new_B FROM tmp_cpg WHERE tmp_cpg.courseID = NEW.courseID;
+    SELECT tmp_cpg.C INTO STRICT new_C FROM tmp_cpg WHERE tmp_cpg.courseID = NEW.courseID;
+    SELECT tmp_cpg.D INTO STRICT new_D FROM tmp_cpg WHERE tmp_cpg.courseID = NEW.courseID;
+    SELECT tmp_cpg.other INTO STRICT new_other FROM tmp_cpg WHERE tmp_cpg.courseID = NEW.courseID;
+
+    IF OLD IS NOT NULL THEN
+      RAISE NOTICE 'update grade cpg';
+      -- this is an update
+        IF OLD.grade IN ('A+', 'A', 'A-') THEN
+          EXECUTE '
+          UPDATE CPG
+              SET A = A - 1
+          WHERE courseID =' || quote_literal(NEW.courseID) || ' AND faculty_name = ' || quote_literal(new_faculty);
+        ELSEIF OLD.grade IN ('B+', 'B', 'B-') THEN
+          EXECUTE '
+          UPDATE CPG
+              SET B = B - 1
+          WHERE courseID =' || quote_literal(NEW.courseID) || ' AND faculty_name = ' || quote_literal(new_faculty);
+        ELSEIF OLD.grade IN ('C+', 'C', 'C-') THEN
+          EXECUTE '
+          UPDATE CPG
+              SET C = C - 1
+          WHERE courseID =' || quote_literal(NEW.courseID) || ' AND faculty_name = ' || quote_literal(new_faculty);
+        ELSEIF OLD.grade IN ('D') THEN
+          EXECUTE '
+          UPDATE CPG
+              SET D = D - 1
+          WHERE courseID =' || quote_literal(NEW.courseID) || ' AND faculty_name = ' || quote_literal(new_faculty);
+        ELSE
+          EXECUTE '
+          UPDATE CPG
+              SET other = other - 1
+          WHERE courseID =' || quote_literal(NEW.courseID) || ' AND faculty_name = ' || quote_literal(new_faculty);
+        END IF;
+    END IF;
 
     IF EXISTS (SELECT 1 FROM CPG WHERE courseID = NEW.courseID AND faculty_name = new_faculty) THEN
-        IF (new_A > 0) THEN
-            EXECUTE '
-            UPDATE CPG
-                SET A = A + 1
-            WHERE courseID =' || quote_literal(NEW.courseID) || ' AND faculty_name = ' || quote_literal(new_faculty);
-        ELSIF (new_B > 0) THEN
-            EXECUTE '
-            UPDATE CPG
-                SET B = B + 1
-            WHERE courseID =' || quote_literal(NEW.courseID) || ' AND faculty_name = ' || quote_literal(new_faculty);
-        ELSIF (new_C > 0) THEN
-            EXECUTE '
-            UPDATE CPG
-                SET C = C + 1
-            WHERE courseID =' || quote_literal(NEW.courseID) || ' AND faculty_name = ' || quote_literal(new_faculty);
-        ELSIF (new_D > 0) THEN
-            EXECUTE '
-            UPDATE CPG
-                SET D = D + 1
-            WHERE courseID =' || quote_literal(NEW.courseID) || ' AND faculty_name = ' || quote_literal(new_faculty);
-        ELSIF (new_other > 0) THEN
-            EXECUTE '
-            UPDATE CPG
-                SET other = other + 1
-            WHERE courseID =' || quote_literal(NEW.courseID) || ' AND faculty_name = ' || quote_literal(new_faculty);
-        END IF;
+      RAISE NOTICE 'increment grade cpg';
+      -- add grade
+      IF (new_A > 0) THEN
+          EXECUTE '
+          UPDATE CPG
+              SET A = A + 1
+          WHERE courseID =' || quote_literal(NEW.courseID) || ' AND faculty_name = ' || quote_literal(new_faculty);
+      ELSIF (new_B > 0) THEN
+          EXECUTE '
+          UPDATE CPG
+              SET B = B + 1
+          WHERE courseID =' || quote_literal(NEW.courseID) || ' AND faculty_name = ' || quote_literal(new_faculty);
+      ELSIF (new_C > 0) THEN
+          EXECUTE '
+          UPDATE CPG
+              SET C = C + 1
+          WHERE courseID =' || quote_literal(NEW.courseID) || ' AND faculty_name = ' || quote_literal(new_faculty);
+      ELSIF (new_D > 0) THEN
+          EXECUTE '
+          UPDATE CPG
+              SET D = D + 1
+          WHERE courseID =' || quote_literal(NEW.courseID) || ' AND faculty_name = ' || quote_literal(new_faculty);
+      ELSIF (new_other > 0) THEN
+          EXECUTE '
+          UPDATE CPG
+              SET other = other + 1
+          WHERE courseID =' || quote_literal(NEW.courseID) || ' AND faculty_name = ' || quote_literal(new_faculty);
+      END IF;
     ELSE
+      -- new row
+      RAISE NOTICE 'new row cpg';
       INSERT INTO CPG (SELECT * FROM tmp_cpg);
     END IF;
 

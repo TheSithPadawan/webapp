@@ -58,7 +58,7 @@
         <script>
             setInterval(() => {
                 location.reload();
-            }, 1000);
+            }, 3000);
         </script>
     </body>
 </html>

@@ -6,7 +6,7 @@
         <li><a href="course_entry_category.jsp">Course Category Entry Form</a></li>
         <li><a href="class_entry.jsp">Classes Entry Form</a></li>
         <li><a href="section_entry.jsp">Section Entry Form</a></li>
-        <li><a href="past_classes.jsp">Past Classes Entry Form</a></li>
+        <li><a href="past_classes.jsp">Grade Entry Form</a></li>
         <li><a href="review_session.jsp">Review Session Entry Form</a></li>
         <li><a href="previous_courseid.jsp">Previous Course ID Entry Form</a></li>
         <li><a href="faculty.jsp">Faculty Entry Form</a></li>

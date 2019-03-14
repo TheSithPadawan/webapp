@@ -11,7 +11,7 @@
                 crossorigin="anonymous"></script>
         <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 
-        <title>Past Class Entry Form</title>
+        <title>Grade Entry Form</title>
     </head>
 
     <body>
