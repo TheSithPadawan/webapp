@@ -104,7 +104,7 @@
             }
         })
             .then((response) => {
-                if (!response.ok || response.statusCode !== 200) {
+                if (!response.ok || response.status !== 200) {
                     return response.text();
                 } else {
                     // response from POST
