@@ -72,10 +72,10 @@ EXECUTE PROCEDURE check_enrollment_limit();
 -- insert new section taught by a faculty to an intermediate table
 -- bind the trigger to the intermediate table, check before insert; if it works, insert to the correct table
 
-SELECT taught_by.sectionid, has_weekly_meetings.day, has_weekly_meetings.time_start, has_weekly_meetings.time_end,
-  taught_by.faculty_name
-  FROM has_weekly_meetings INNER JOIN taught_by ON taught_by.sectionid = has_weekly_meetings.sectionid
-WHERE faculty_name = 'Sanjoy Dasgupta';
+-- SELECT taught_by.sectionid, has_weekly_meetings.day, has_weekly_meetings.time_start, has_weekly_meetings.time_end,
+--   taught_by.faculty_name
+--   FROM has_weekly_meetings INNER JOIN taught_by ON taught_by.sectionid = has_weekly_meetings.sectionid
+-- WHERE faculty_name = 'Sanjoy Dasgupta';
 
 CREATE OR REPLACE FUNCTION check_faculty_schedule()
   RETURNS trigger AS
@@ -278,7 +278,7 @@ CREATE OR REPLACE FUNCTION refresh_mat_view()
     RETURN NEW;
     END;
   $$;
-  
+
 -- trigger binds to has_taken table
 CREATE TRIGGER update_mat_vew
   BEFORE INSERT OR UPDATE
