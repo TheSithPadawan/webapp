@@ -209,35 +209,35 @@ CREATE OR REPLACE FUNCTION refresh_mat_view()
       -- either grade update or new student records
       IF NEW.grade IN ('A+', 'A', 'A-') THEN
         UPDATE grade_aggregate
-        SET A = tmp_cpqg.A
+        SET A = A + tmp_cpqg.A
         FROM tmp_cpqg
         WHERE tmp_cpqg.courseid = grade_aggregate.courseid
               AND tmp_cpqg.faculty_name = grade_aggregate.faculty_name AND tmp_cpqg.quarter = grade_aggregate.quarter
               AND tmp_cpqg.year = grade_aggregate.year;
       ELSEIF NEW.grade IN ('B+', 'B', 'B-') THEN
         UPDATE grade_aggregate
-        SET B = tmp_cpqg.B
+        SET B = B + tmp_cpqg.B
         FROM tmp_cpqg
         WHERE tmp_cpqg.courseid = grade_aggregate.courseid
               AND tmp_cpqg.faculty_name = grade_aggregate.faculty_name AND tmp_cpqg.quarter = grade_aggregate.quarter
               AND tmp_cpqg.year = grade_aggregate.year;
       ELSEIF NEW.grade IN ('C+', 'C', 'C-') THEN
         UPDATE grade_aggregate
-        SET C = tmp_cpqg.C
+        SET C = C + tmp_cpqg.C
         FROM tmp_cpqg
         WHERE tmp_cpqg.courseid = grade_aggregate.courseid
               AND tmp_cpqg.faculty_name = grade_aggregate.faculty_name AND tmp_cpqg.quarter = grade_aggregate.quarter
               AND tmp_cpqg.year = grade_aggregate.year;
       ELSEIF NEW.grade IN ('D+', 'D', 'D-') THEN
         UPDATE grade_aggregate
-        SET D = tmp_cpqg.D
+        SET D = D + tmp_cpqg.D
         FROM tmp_cpqg
         WHERE tmp_cpqg.courseid = grade_aggregate.courseid
               AND tmp_cpqg.faculty_name = grade_aggregate.faculty_name AND tmp_cpqg.quarter = grade_aggregate.quarter
               AND tmp_cpqg.year = grade_aggregate.year;
       ELSE
         UPDATE grade_aggregate
-        SET other = tmp_cpqg.other
+        SET other = other + tmp_cpqg.other
         FROM tmp_cpqg
         WHERE tmp_cpqg.courseid = grade_aggregate.courseid
               AND tmp_cpqg.faculty_name = grade_aggregate.faculty_name AND tmp_cpqg.quarter = grade_aggregate.quarter
